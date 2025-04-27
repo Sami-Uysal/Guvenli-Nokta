@@ -142,3 +142,10 @@ crashlytics.properties
 crashlytics-build.properties
 fabric.properties
 
+### Firebase template
+.idea
+**/node_modules/*
+**/.firebaserc
+
+**/google-services.json
+
