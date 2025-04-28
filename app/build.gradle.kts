@@ -2,11 +2,12 @@ plugins {
     alias(libs.plugins.android.application)
     id("com.google.gms.google-services")
 }
-
 android {
     namespace = "com.guvenlinokta.app"
     compileSdk = 35
-
+    buildFeatures {
+        buildConfig = true
+    }
     defaultConfig {
         applicationId = "com.guvenlinokta.app"
         minSdk = 24
@@ -15,6 +16,12 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        buildConfigField(
+            "String",
+            "API_KEY",
+            "\"${project.property("API_KEY")}\""
+        )
+        manifestPlaceholders["MAPS_API_KEY"] = project.property("API_KEY") as String
     }
 
     buildTypes {
@@ -44,4 +51,5 @@ dependencies {
     implementation(platform("com.google.firebase:firebase-bom:33.13.0"))
     implementation("com.google.firebase:firebase-analytics")
     implementation("com.google.firebase:firebase-auth")
+    implementation("com.google.android.gms:play-services-maps:18.2.0")
 }
