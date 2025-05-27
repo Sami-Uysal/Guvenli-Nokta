@@ -4,11 +4,14 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.Toast;
+import androidx.appcompat.widget.Toolbar;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -35,6 +38,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private boolean isSehirSpinnerInitialized = false;
     private boolean isIlceSpinnerInitialized = false;
     private boolean isMahalleSpinnerInitialized = false;
+
+
 
 
     @Override
@@ -124,6 +129,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
             @Override public void onNothingSelected(AdapterView<?> parent) {}
         });
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
 
     }
     private void sehirIlceMahalleYapisiYukle() {
@@ -215,4 +222,29 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         mahalleSpinner.setEnabled(true);
 
     }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        int id = item.getItemId();
+
+        if (id == R.id.action_info) {
+            Toast.makeText(this, "Bilgilendirme sayfası açılacak", Toast.LENGTH_SHORT).show();
+            return true;
+        } else if (id == R.id.action_first_aid) {
+            Toast.makeText(this, "İlk Yardım sayfası açılacak", Toast.LENGTH_SHORT).show();
+            return true;
+        } else if (id == R.id.action_emergency) {
+            Toast.makeText(this, "Acil Numaralar sayfası açılacak", Toast.LENGTH_SHORT).show();
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+
 }
