@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:padding="24dp"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <DatePicker
+        android:id="@+id/tarihSecici"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:calendarViewShown="true" />
+
+    <TextView
+        android:id="@+id/kalanSureText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Kalan Süre: "
+        android:textSize="18sp"
+        android:layout_marginTop="16dp"/>
+
+    <ProgressBar
+        android:id="@+id/ilerlemeCubugu"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:max="100"
+        android:layout_marginTop="16dp"/>
+
+</LinearLayout>

@@ -3,6 +3,7 @@ package com.guvenlinokta.app;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -231,20 +232,32 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
-
-        if (id == R.id.action_info) {
-            Toast.makeText(this, "Bilgilendirme sayfası açılacak", Toast.LENGTH_SHORT).show();
+        if (id == R.id.action_profile) {
+            boolean girisYaptiMi = getSharedPreferences("app_prefs", MODE_PRIVATE)
+                    .getBoolean("giris_yapti_mi", false);
+            if (girisYaptiMi) {
+                startActivity(new Intent(this, ProfilActivity.class));
+            } else {
+                startActivity(new Intent(this, LoginActivity.class));
+            }
+            return true;
+        }else if (id == R.id.action_info) {
+            Intent infoIntent = new Intent(MainActivity.this, InfoActivity.class);
+            startActivity(infoIntent);
             return true;
         } else if (id == R.id.action_first_aid) {
-            Toast.makeText(this, "İlk Yardım sayfası açılacak", Toast.LENGTH_SHORT).show();
+            Intent firstAidIntent = new Intent(MainActivity.this, FirstAidActivity.class);
+            startActivity(firstAidIntent);
             return true;
         } else if (id == R.id.action_emergency) {
-            Toast.makeText(this, "Acil Numaralar sayfası açılacak", Toast.LENGTH_SHORT).show();
+            Intent emergencyIntent = new Intent(MainActivity.this, EmergencyActivity.class);
+            startActivity(emergencyIntent);
             return true;
         }
 
         return super.onOptionsItemSelected(item);
     }
+
 
 
 }
