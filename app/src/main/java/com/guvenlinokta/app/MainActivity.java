@@ -29,6 +29,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 
 public class MainActivity extends AppCompatActivity implements OnMapReadyCallback {
@@ -39,7 +41,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private boolean isSehirSpinnerInitialized = false;
     private boolean isIlceSpinnerInitialized = false;
     private boolean isMahalleSpinnerInitialized = false;
-
+    private FloatingActionButton fabAddPin;
+    private boolean pinleriYukleBekle = false;
 
 
 
@@ -133,6 +136,37 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        fabAddPin = findViewById(R.id.fabAddPin);
+        fabAddPin.setOnClickListener(v -> {
+            if (FirebaseAuth.getInstance().getCurrentUser() != null) {
+                Toast.makeText(this, "Lütfen haritada bir nokta seçin.", Toast.LENGTH_SHORT).show();
+                mMap.setOnMapClickListener(latLng -> {
+                    mMap.clear();
+                    mMap.addMarker(new MarkerOptions().position(latLng).title("Yeni Pin"));
+
+                    String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+                    Map<String, Object> pin = new HashMap<>();
+                    pin.put("lat", latLng.latitude);
+                    pin.put("lng", latLng.longitude);
+
+                    com.google.firebase.firestore.FirebaseFirestore.getInstance()
+                            .collection("users")
+                            .document(userId)
+                            .collection("pins")
+                            .add(pin)
+                            .addOnSuccessListener(documentReference -> {
+                                Toast.makeText(this, "Pin kaydedildi!", Toast.LENGTH_SHORT).show();
+                                mMap.setOnMapClickListener(null);
+                            })
+                            .addOnFailureListener(e -> {
+                                Toast.makeText(this, "Hata: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                            });
+                });
+            } else {
+                Toast.makeText(this, "Pin eklemek için oturum açın.", Toast.LENGTH_SHORT).show();
+            }
+        });
+
     }
     private void sehirIlceMahalleYapisiYukle() {
         try {
@@ -210,8 +244,18 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
         return ilkPinYeri;
     }
-
-
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (getIntent().getBooleanExtra("pinleriYukle", false)) {
+            getIntent().removeExtra("pinleriYukle");
+            if (mMap == null) {
+                pinleriYukleBekle = true;
+            } else {
+                kullaniciPinleriniYukleVeGoster();
+            }
+        }
+    }
     @Override
     public void onMapReady(@NonNull GoogleMap googleMap) {
         mMap = googleMap;
@@ -221,6 +265,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         sehirSpinner.setEnabled(true);
         ilceSpinner.setEnabled(true);
         mahalleSpinner.setEnabled(true);
+        if (pinleriYukleBekle) {
+            kullaniciPinleriniYukleVeGoster();
+            pinleriYukleBekle = false;
+        }
 
     }
     @Override
@@ -233,9 +281,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.action_profile) {
-            boolean girisYaptiMi = getSharedPreferences("app_prefs", MODE_PRIVATE)
-                    .getBoolean("giris_yapti_mi", false);
-            if (girisYaptiMi) {
+            if (FirebaseAuth.getInstance().getCurrentUser() != null) {
                 startActivity(new Intent(this, ProfilActivity.class));
             } else {
                 startActivity(new Intent(this, LoginActivity.class));
@@ -257,7 +303,41 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         return super.onOptionsItemSelected(item);
     }
-
-
+    private void kullaniciPinleriniYukleVeGoster() {
+        if (FirebaseAuth.getInstance().getCurrentUser() == null) {
+            Toast.makeText(this, "Kullanıcı oturumu yok.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if (mMap == null) {
+            Toast.makeText(this, "Harita hazır değil.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        com.google.firebase.firestore.FirebaseFirestore.getInstance()
+                .collection("users")
+                .document(userId)
+                .collection("pins")
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    mMap.clear();
+                    if (queryDocumentSnapshots.isEmpty()) {
+                        Toast.makeText(this, "Kayıtlı pin bulunamadı.", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(this, "Pinler başarıyla yüklendi.", Toast.LENGTH_SHORT).show();
+                    }
+                    for (com.google.firebase.firestore.DocumentSnapshot doc : queryDocumentSnapshots) {
+                        Double lat = doc.getDouble("lat");
+                        Double lng = doc.getDouble("lng");
+                        if (lat != null && lng != null) {
+                            mMap.addMarker(new MarkerOptions().position(new LatLng(lat, lng)).title("Kaydedilmiş Pin"));
+                        } else {
+                            Toast.makeText(this, "Bir pinin konumu eksik.", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(this, "Firestore hata: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                });
+    }
 
 }

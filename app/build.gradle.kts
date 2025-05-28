@@ -57,4 +57,5 @@ dependencies {
     implementation("com.google.maps.android:android-maps-utils:3.4.0")
     implementation("com.github.bumptech.glide:glide:4.12.0")
     annotationProcessor("com.github.bumptech.glide:compiler:4.12.0")
+    implementation("com.google.firebase:firebase-firestore")
 }

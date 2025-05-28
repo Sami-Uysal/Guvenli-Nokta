@@ -57,10 +57,6 @@ public class LoginActivity extends AppCompatActivity {
                 .addOnCompleteListener(this, task -> {
                     if (task.isSuccessful()) {
                         Toast.makeText(this, "Giriş Başarılı", Toast.LENGTH_SHORT).show();
-                        getSharedPreferences("app_prefs", MODE_PRIVATE)
-                                .edit()
-                                .putBoolean("giris_yapti_mi", true)
-                                .apply();
                         startActivity(new Intent(LoginActivity.this, MainActivity.class));
                         finish();
                     } else {

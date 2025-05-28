@@ -1,12 +1,20 @@
 package com.guvenlinokta.app;
 
 import android.app.DatePickerDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.view.View;
+import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.google.firebase.auth.FirebaseAuth;
+
 import java.util.Calendar;
 
 public class ProfilActivity extends AppCompatActivity {
@@ -43,6 +51,27 @@ public class ProfilActivity extends AppCompatActivity {
                     }
                 }
         );
+        Button btnPinleriYukle = findViewById(R.id.btnPinleriYukle);
+        ProgressBar ilerlemeCubugu = findViewById(R.id.ilerlemeCubugu);
+
+        btnPinleriYukle.setOnClickListener(v -> {
+            ilerlemeCubugu.setVisibility(View.VISIBLE);
+            btnPinleriYukle.setEnabled(false);
+            new android.os.Handler().postDelayed(() -> {
+                ilerlemeCubugu.setVisibility(View.GONE);
+                btnPinleriYukle.setEnabled(true);
+                Intent intent = new Intent(ProfilActivity.this, MainActivity.class);
+                intent.putExtra("pinleriYukle", true);
+                startActivity(intent);
+                finish();
+            }, 3000);
+        });
+        Button btnCikis = findViewById(R.id.btnCikis);
+        btnCikis.setOnClickListener(v -> {
+            FirebaseAuth.getInstance().signOut();
+            Toast.makeText(this, "Çıkış yapıldı.", Toast.LENGTH_SHORT).show();
+            finish();
+        });
     }
 
     private void baslatGeriSayim() {

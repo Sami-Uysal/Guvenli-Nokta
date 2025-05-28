@@ -18,6 +18,12 @@
         android:text="Kalan Süre: "
         android:textSize="18sp"
         android:layout_marginTop="16dp"/>
+    <Button
+        android:id="@+id/btnPinleriYukle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Pinleri Yükle"
+        android:layout_marginTop="16dp"/>
 
     <ProgressBar
         android:id="@+id/ilerlemeCubugu"
@@ -25,6 +31,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:max="100"
+        android:layout_marginTop="16dp"/>
+    <Button
+        android:id="@+id/btnCikis"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Çıkış Yap"
         android:layout_marginTop="16dp"/>
 
 </LinearLayout>
