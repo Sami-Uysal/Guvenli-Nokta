@@ -29,6 +29,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -50,14 +52,86 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        findViewById(R.id.tvToplanmaAlanSec).setOnClickListener(v -> {
+            View bottomSheetView = getLayoutInflater().inflate(R.layout.bottomsheet_toplanma_alani, null);
+            BottomSheetDialog dialog = new BottomSheetDialog(this);
+            dialog.setContentView(bottomSheetView);
 
-        sehirSpinner = findViewById(R.id.sehirSpinner);
-        ilceSpinner = findViewById(R.id.ilceSpinner);
-        mahalleSpinner = findViewById(R.id.mahalleSpinner);
+            sehirSpinner = bottomSheetView.findViewById(R.id.sehirSpinner);
+            ilceSpinner = bottomSheetView.findViewById(R.id.ilceSpinner);
+            mahalleSpinner = bottomSheetView.findViewById(R.id.mahalleSpinner);
 
-        sehirSpinner.setEnabled(false);
-        ilceSpinner.setEnabled(false);
-        mahalleSpinner.setEnabled(false);
+            sehirIlceMahalleYapisiYukle();
+
+            ArrayAdapter<String> sehirAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, new ArrayList<>(sehirdenIlcedenMahalleye.keySet()));
+            sehirSpinner.setAdapter(sehirAdapter);
+
+            sehirSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                    if (!isSehirSpinnerInitialized) {
+                        isSehirSpinnerInitialized = true;
+                        return;
+                    }
+
+                    String seciliSehir = (String) sehirSpinner.getSelectedItem();
+                    Map<String, List<String>> ilceMap = sehirdenIlcedenMahalleye.get(seciliSehir);
+                    List<String> ilceler = new ArrayList<>(ilceMap.keySet());
+                    ArrayAdapter<String> ilceAdapter = new ArrayAdapter<>(MainActivity.this, android.R.layout.simple_spinner_dropdown_item, ilceler);
+                    ilceSpinner.setAdapter(ilceAdapter);
+                }
+
+                @Override public void onNothingSelected(AdapterView<?> parent) {}
+            });
+
+
+            ilceSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                    if (!isIlceSpinnerInitialized) {
+                        isIlceSpinnerInitialized = true;
+                        return;
+                    }
+
+                    String seciliSehir = (String) sehirSpinner.getSelectedItem();
+                    String seciliIlce = (String) ilceSpinner.getSelectedItem();
+                    List<String> mahalleler = sehirdenIlcedenMahalleye.get(seciliSehir).get(seciliIlce);
+                    ArrayAdapter<String> mahalleAdapter = new ArrayAdapter<>(MainActivity.this, android.R.layout.simple_spinner_dropdown_item, mahalleler);
+                    mahalleSpinner.setAdapter(mahalleAdapter);
+                }
+
+                @Override public void onNothingSelected(AdapterView<?> parent) {}
+            });
+
+
+            mahalleSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                    if (!isMahalleSpinnerInitialized) {
+                        isMahalleSpinnerInitialized = true;
+                        return;
+                    }
+
+                    String seciliSehir = (String) sehirSpinner.getSelectedItem();
+                    String seciliIlce = (String) ilceSpinner.getSelectedItem();
+                    String seciliMahalle = (String) mahalleSpinner.getSelectedItem();
+                    if (seciliSehir != null && seciliIlce != null && seciliMahalle != null) {
+                        mMap.clear();
+                        String path = "pins/" + seciliSehir + "/" + seciliIlce + "/" + seciliMahalle + "/veri.csv";
+                        LatLng ilkPinYeri = CSVdenPinYukle(path);
+
+                        if (ilkPinYeri != null) {
+                            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(ilkPinYeri, 15f));
+                        } else {
+                            Toast.makeText(MainActivity.this, seciliMahalle + " için gösterilecek konum bulunamadı.", Toast.LENGTH_SHORT).show();
+                            LatLng defaultLocation = new LatLng(41.0165, 28.9640);
+                            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(defaultLocation, 10f));
+                        }
+                    }
+                }
+
+                @Override public void onNothingSelected(AdapterView<?> parent) {}
+            });
+
+            dialog.show();
+        });
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
@@ -65,103 +139,51 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             mapFragment.getMapAsync(this);
         }
 
-        sehirIlceMahalleYapisiYukle();
 
-        ArrayAdapter<String> sehirAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, new ArrayList<>(sehirdenIlcedenMahalleye.keySet()));
-        sehirSpinner.setAdapter(sehirAdapter);
-
-        sehirSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if (!isSehirSpinnerInitialized) {
-                    isSehirSpinnerInitialized = true;
-                    return;
-                }
-
-                String seciliSehir = (String) sehirSpinner.getSelectedItem();
-                Map<String, List<String>> ilceMap = sehirdenIlcedenMahalleye.get(seciliSehir);
-                List<String> ilceler = new ArrayList<>(ilceMap.keySet());
-                ArrayAdapter<String> ilceAdapter = new ArrayAdapter<>(MainActivity.this, android.R.layout.simple_spinner_dropdown_item, ilceler);
-                ilceSpinner.setAdapter(ilceAdapter);
-            }
-
-            @Override public void onNothingSelected(AdapterView<?> parent) {}
-        });
-
-
-        ilceSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if (!isIlceSpinnerInitialized) {
-                    isIlceSpinnerInitialized = true;
-                    return;
-                }
-
-                String seciliSehir = (String) sehirSpinner.getSelectedItem();
-                String seciliIlce = (String) ilceSpinner.getSelectedItem();
-                List<String> mahalleler = sehirdenIlcedenMahalleye.get(seciliSehir).get(seciliIlce);
-                ArrayAdapter<String> mahalleAdapter = new ArrayAdapter<>(MainActivity.this, android.R.layout.simple_spinner_dropdown_item, mahalleler);
-                mahalleSpinner.setAdapter(mahalleAdapter);
-            }
-
-            @Override public void onNothingSelected(AdapterView<?> parent) {}
-        });
-
-
-        mahalleSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if (!isMahalleSpinnerInitialized) {
-                    isMahalleSpinnerInitialized = true;
-                    return;
-                }
-
-                String seciliSehir = (String) sehirSpinner.getSelectedItem();
-                String seciliIlce = (String) ilceSpinner.getSelectedItem();
-                String seciliMahalle = (String) mahalleSpinner.getSelectedItem();
-                if (seciliSehir != null && seciliIlce != null && seciliMahalle != null) {
-                    mMap.clear();
-                    String path = "pins/" + seciliSehir + "/" + seciliIlce + "/" + seciliMahalle + "/veri.csv";
-                    LatLng ilkPinYeri = CSVdenPinYukle(path);
-
-                    if (ilkPinYeri != null) {
-                        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(ilkPinYeri, 15f));
-                    } else {
-                        Toast.makeText(MainActivity.this, seciliMahalle + " için gösterilecek konum bulunamadı.", Toast.LENGTH_SHORT).show();
-                        LatLng defaultLocation = new LatLng(41.0165, 28.9640);
-                        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(defaultLocation, 10f));
-                    }
-                }
-            }
-
-            @Override public void onNothingSelected(AdapterView<?> parent) {}
-        });
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         fabAddPin = findViewById(R.id.fabAddPin);
         fabAddPin.setOnClickListener(v -> {
             if (FirebaseAuth.getInstance().getCurrentUser() != null) {
-                Toast.makeText(this, "Lütfen haritada bir nokta seçin.", Toast.LENGTH_SHORT).show();
-                mMap.setOnMapClickListener(latLng -> {
-                    mMap.clear();
-                    mMap.addMarker(new MarkerOptions().position(latLng).title("Yeni Pin"));
+                android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(this);
+                builder.setTitle("Yeni Toplanma Alanı:");
+                final android.widget.EditText input = new android.widget.EditText(this);
+                input.setHint("Örn: Ahmet Parkı");
+                builder.setView(input);
 
-                    String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
-                    Map<String, Object> pin = new HashMap<>();
-                    pin.put("lat", latLng.latitude);
-                    pin.put("lng", latLng.longitude);
+                builder.setPositiveButton("Kaydet", (dialog, which) -> {
+                    String pinAdi = input.getText().toString().trim();
+                    if (pinAdi.isEmpty()) {
+                        Toast.makeText(this, "Pin adı boş olamaz.", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                    Toast.makeText(this, "Lütfen haritada bir nokta seçin.", Toast.LENGTH_SHORT).show();
+                    mMap.setOnMapClickListener(latLng -> {
+                        mMap.clear();
+                        mMap.addMarker(new MarkerOptions().position(latLng).title(pinAdi));
+                        String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+                        Map<String, Object> pin = new HashMap<>();
+                        pin.put("lat", latLng.latitude);
+                        pin.put("lng", latLng.longitude);
+                        pin.put("ad", pinAdi);
 
-                    com.google.firebase.firestore.FirebaseFirestore.getInstance()
-                            .collection("users")
-                            .document(userId)
-                            .collection("pins")
-                            .add(pin)
-                            .addOnSuccessListener(documentReference -> {
-                                Toast.makeText(this, "Pin kaydedildi!", Toast.LENGTH_SHORT).show();
-                                mMap.setOnMapClickListener(null);
-                            })
-                            .addOnFailureListener(e -> {
-                                Toast.makeText(this, "Hata: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                            });
+                        com.google.firebase.firestore.FirebaseFirestore.getInstance()
+                                .collection("users")
+                                .document(userId)
+                                .collection("pins")
+                                .add(pin)
+                                .addOnSuccessListener(documentReference -> {
+                                    Toast.makeText(this, "Pin kaydedildi!", Toast.LENGTH_SHORT).show();
+                                    mMap.setOnMapClickListener(null);
+                                })
+                                .addOnFailureListener(e -> {
+                                    Toast.makeText(this, "Hata: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                                });
+                    });
                 });
+                builder.setNegativeButton("İptal", (dialog, which) -> dialog.cancel());
+                builder.show();
             } else {
                 Toast.makeText(this, "Pin eklemek için oturum açın.", Toast.LENGTH_SHORT).show();
             }
@@ -262,9 +284,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         LatLng baslangıcNoktası = new LatLng(41.0165, 28.9640);
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(baslangıcNoktası, 15f));
-        sehirSpinner.setEnabled(true);
-        ilceSpinner.setEnabled(true);
-        mahalleSpinner.setEnabled(true);
         if (pinleriYukleBekle) {
             kullaniciPinleriniYukleVeGoster();
             pinleriYukleBekle = false;
@@ -328,10 +347,12 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     for (com.google.firebase.firestore.DocumentSnapshot doc : queryDocumentSnapshots) {
                         Double lat = doc.getDouble("lat");
                         Double lng = doc.getDouble("lng");
+                        String ad = doc.getString("ad");
                         if (lat != null && lng != null) {
-                            mMap.addMarker(new MarkerOptions().position(new LatLng(lat, lng)).title("Kaydedilmiş Pin"));
-                        } else {
-                            Toast.makeText(this, "Bir pinin konumu eksik.", Toast.LENGTH_SHORT).show();
+                            mMap.addMarker(new MarkerOptions().position(new LatLng(lat, lng)).title(ad != null ? ad : "Kaydedilmiş Pin"));
+                        }
+                        else {
+                            Toast.makeText(this, "Geçersiz pin verisi: " + doc.getId(), Toast.LENGTH_SHORT).show();
                         }
                     }
                 })
