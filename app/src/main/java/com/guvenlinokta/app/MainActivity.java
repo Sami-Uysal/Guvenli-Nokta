@@ -5,7 +5,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -33,6 +32,8 @@ import java.util.List;
 import java.util.Map;
 
 import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.android.material.button.MaterialButton;
+import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -159,27 +160,28 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         fabAddPin = findViewById(R.id.fabAddPin);
         fabAddPin.setOnClickListener(v -> {
             if (FirebaseAuth.getInstance().getCurrentUser() != null) {
-                android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(this);
-                builder.setTitle("Yeni Toplanma Alanı:");
-                final android.widget.EditText input = new android.widget.EditText(this);
-                input.setHint("Örn: Ahmet Parkı");
-                builder.setView(input);
+                View bottomSheetView = getLayoutInflater().inflate(R.layout.bottomsheet_pin_ekleme, null);
+                BottomSheetDialog dialog = new BottomSheetDialog(this);
+                dialog.setContentView(bottomSheetView);
 
-                builder.setPositiveButton("Kaydet", (dialog, which) -> {
-                    String pinAdi = input.getText().toString().trim();
-                    if (pinAdi.isEmpty()) {
-                        Toast.makeText(this, "Pin adı boş olamaz.", Toast.LENGTH_SHORT).show();
+                TextInputEditText etName = bottomSheetView.findViewById(R.id.etName);
+                MaterialButton btnAdd = bottomSheetView.findViewById(R.id.btnAdd);
+
+                btnAdd.setOnClickListener(view -> {
+                    String ad = etName.getText().toString().trim();
+                    if (ad.isEmpty()) {
+                        etName.setError("Alan adı zorunlu");
                         return;
                     }
                     Toast.makeText(this, "Lütfen haritada bir nokta seçin.", Toast.LENGTH_SHORT).show();
                     mMap.setOnMapClickListener(latLng -> {
                         mMap.clear();
-                        mMap.addMarker(new MarkerOptions().position(latLng).title(pinAdi));
+                        mMap.addMarker(new MarkerOptions().position(latLng).title(ad));
                         String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
                         Map<String, Object> pin = new HashMap<>();
                         pin.put("lat", latLng.latitude);
                         pin.put("lng", latLng.longitude);
-                        pin.put("ad", pinAdi);
+                        pin.put("ad", ad);
 
                         com.google.firebase.firestore.FirebaseFirestore.getInstance()
                                 .collection("users")
@@ -194,9 +196,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                                     Toast.makeText(this, "Hata: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                                 });
                     });
+                    dialog.dismiss();
                 });
-                builder.setNegativeButton("İptal", (dialog, which) -> dialog.cancel());
-                builder.show();
+                dialog.show();
             } else {
                 Toast.makeText(this, "Pin eklemek için oturum açın.", Toast.LENGTH_SHORT).show();
             }
