@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -26,6 +27,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -53,6 +55,11 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         findViewById(R.id.tvToplanmaAlanSec).setOnClickListener(v -> {
+
+            isSehirSpinnerInitialized = false;
+            isIlceSpinnerInitialized = false;
+            isMahalleSpinnerInitialized = false;
+
             View bottomSheetView = getLayoutInflater().inflate(R.layout.bottomsheet_toplanma_alani, null);
             BottomSheetDialog dialog = new BottomSheetDialog(this);
             dialog.setContentView(bottomSheetView);
@@ -63,7 +70,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
             sehirIlceMahalleYapisiYukle();
 
-            ArrayAdapter<String> sehirAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, new ArrayList<>(sehirdenIlcedenMahalleye.keySet()));
+            List<String> sehirler = new ArrayList<>(sehirdenIlcedenMahalleye.keySet());
+            Collections.sort(sehirler);
+            sehirler.add(0, "Lütfen bir şehir seçiniz");
+            ArrayAdapter<String> sehirAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, sehirler);
             sehirSpinner.setAdapter(sehirAdapter);
 
             sehirSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -76,6 +86,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     String seciliSehir = (String) sehirSpinner.getSelectedItem();
                     Map<String, List<String>> ilceMap = sehirdenIlcedenMahalleye.get(seciliSehir);
                     List<String> ilceler = new ArrayList<>(ilceMap.keySet());
+                    Collections.sort(ilceler);
                     ArrayAdapter<String> ilceAdapter = new ArrayAdapter<>(MainActivity.this, android.R.layout.simple_spinner_dropdown_item, ilceler);
                     ilceSpinner.setAdapter(ilceAdapter);
                 }
@@ -94,6 +105,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     String seciliSehir = (String) sehirSpinner.getSelectedItem();
                     String seciliIlce = (String) ilceSpinner.getSelectedItem();
                     List<String> mahalleler = sehirdenIlcedenMahalleye.get(seciliSehir).get(seciliIlce);
+                    Collections.sort(mahalleler);
                     ArrayAdapter<String> mahalleAdapter = new ArrayAdapter<>(MainActivity.this, android.R.layout.simple_spinner_dropdown_item, mahalleler);
                     mahalleSpinner.setAdapter(mahalleAdapter);
                 }
@@ -124,6 +136,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                             LatLng defaultLocation = new LatLng(41.0165, 28.9640);
                             mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(defaultLocation, 10f));
                         }
+                        dialog.dismiss();
                     }
                 }
 

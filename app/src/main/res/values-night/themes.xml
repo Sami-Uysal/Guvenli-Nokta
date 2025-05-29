@@ -3,5 +3,10 @@
     <style name="Base.Theme.GüvenliNokta" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Customize your dark theme here. -->
         <!-- <item name="colorPrimary">@color/my_dark_primary</item> -->
+        <item name="colorPrimary">@color/colorPrimary_dark</item>
+        <item name="colorOnPrimary">@color/colorOnPrimary_dark</item>
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="toolbarStyle">@style/Widget.MaterialComponents.Toolbar</item>
     </style>
 </resources>
