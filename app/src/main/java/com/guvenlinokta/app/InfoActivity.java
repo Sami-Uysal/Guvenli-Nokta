@@ -49,8 +49,8 @@ public class InfoActivity extends AppCompatActivity {
                     Glide.with(InfoActivity.this)
                             .asGif()
                             .load(selectedDisaster.getGifResourceId())
-                            .placeholder(R.drawable.ic_launcher_background)
-                            .error(R.drawable.ic_launcher_foreground)
+                            .placeholder(R.drawable.logo)
+                            .error(R.drawable.logo)
                             .into(imageViewDisasterGif);
                     imageViewDisasterGif.setVisibility(View.VISIBLE);
                 } else {

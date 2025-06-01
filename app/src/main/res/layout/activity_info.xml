@@ -1,45 +1,61 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<!-- app/src/main/res/layout/activity_info.xml -->
+<com.google.android.material.card.MaterialCardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp"
+    android:layout_margin="16dp"
+    android:backgroundTint="@color/md_theme_background"
     tools:context=".InfoActivity">
 
-    <TextView
-        android:id="@+id/textViewInfoTitle" android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Afet Bilgilendirme"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        android:layout_alignParentTop="true" android:layout_centerHorizontal="true" android:layout_marginBottom="16dp"/>
-
-    <Spinner
-        android:id="@+id/spinnerDisasterType"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/textViewInfoTitle" android:layout_marginBottom="16dp"
-        android:padding="8dp"
-        android:background="@android:drawable/btn_dropdown" />
+        android:layout_height="match_parent"
+        android:padding="16dp">
 
-    <ImageView
-        android:id="@+id/imageViewDisasterGif"
-        android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:layout_below="@id/spinnerDisasterType" android:scaleType="centerInside"
-        android:layout_marginBottom="16dp"
-        android:contentDescription="Afet Bilgi GIF'i"/>
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/textViewInfoTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Afet Bilgilendirme"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="16dp"/>
 
-    <ScrollView
-        android:id="@+id/scrollViewInfo" android:layout_width="match_parent"
-        android:layout_height="match_parent" android:layout_below="@id/imageViewDisasterGif" android:layout_alignParentBottom="true"> <TextView
-        android:id="@+id/textViewDisasterInfo"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textSize="16sp"
-        android:lineSpacingExtra="4dp"
-        tools:text="Lütfen bir afet türü seçin."/>
-    </ScrollView>
+        <Spinner
+            android:id="@+id/spinnerDisasterType"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/textViewInfoTitle"
+            android:layout_marginBottom="16dp"
+            android:spinnerMode="dropdown"
+            android:prompt="@string/afet_seciniz"/>
 
-</RelativeLayout>
+        <ImageView
+            android:id="@+id/imageViewDisasterGif"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:layout_below="@id/spinnerDisasterType"
+            android:scaleType="centerInside"
+            android:layout_marginBottom="16dp"
+            android:contentDescription="Afet Bilgi GIF'i"/>
+
+        <ScrollView
+            android:id="@+id/scrollViewInfo"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@id/imageViewDisasterGif"
+            android:layout_alignParentBottom="true">
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/textViewDisasterInfo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:lineSpacingExtra="4dp"
+                tools:text="Lütfen bir afet türü seçin."/>
+        </ScrollView>
+    </RelativeLayout>
+</com.google.android.material.card.MaterialCardView>

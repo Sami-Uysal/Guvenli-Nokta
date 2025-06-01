@@ -5,4 +5,5 @@
     <color name="colorOnPrimary">#000000</color>
     <color name="colorPrimary_dark">#0D47A1</color>
     <color name="colorOnPrimary_dark">#FFFFFF</color>
+    <color name="md_theme_background">#fffdd0</color>
 </resources>

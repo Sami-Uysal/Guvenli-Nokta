@@ -1,18 +1,21 @@
 package com.guvenlinokta.app;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.Toast;
-import androidx.appcompat.widget.Toolbar;
+
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -33,6 +36,7 @@ import java.util.Map;
 
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -41,121 +45,50 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 public class MainActivity extends AppCompatActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
-    private Spinner sehirSpinner, ilceSpinner, mahalleSpinner;
     private Map<String, Map<String, List<String>>> sehirdenIlcedenMahalleye = new HashMap<>();
     private boolean isSehirSpinnerInitialized = false;
     private boolean isIlceSpinnerInitialized = false;
     private boolean isMahalleSpinnerInitialized = false;
     private FloatingActionButton fabAddPin;
     private boolean pinleriYukleBekle = false;
-
+    private DrawerLayout drawerLayout;
+    private NavigationView navigationView;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        findViewById(R.id.tvToplanmaAlanSec).setOnClickListener(v -> {
 
-            isSehirSpinnerInitialized = false;
-            isIlceSpinnerInitialized = false;
-            isMahalleSpinnerInitialized = false;
+        drawerLayout = findViewById(R.id.drawer_layout);
+        navigationView = findViewById(R.id.navigation_view);
 
-            View bottomSheetView = getLayoutInflater().inflate(R.layout.bottomsheet_toplanma_alani, null);
-            BottomSheetDialog dialog = new BottomSheetDialog(this);
-            dialog.setContentView(bottomSheetView);
+        FloatingActionButton fabMenu = findViewById(R.id.fabMenu);
+        fabMenu.setOnClickListener(v -> drawerLayout.openDrawer(GravityCompat.START));
 
-            sehirSpinner = bottomSheetView.findViewById(R.id.sehirSpinner);
-            ilceSpinner = bottomSheetView.findViewById(R.id.ilceSpinner);
-            mahalleSpinner = bottomSheetView.findViewById(R.id.mahalleSpinner);
+        sehirIlceMahalleYapisiYukle();
 
-            sehirIlceMahalleYapisiYukle();
-
-            List<String> sehirler = new ArrayList<>(sehirdenIlcedenMahalleye.keySet());
-            Collections.sort(sehirler);
-            sehirler.add(0, "Lütfen bir şehir seçiniz");
-            ArrayAdapter<String> sehirAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, sehirler);
-            sehirSpinner.setAdapter(sehirAdapter);
-
-            sehirSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                @Override public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                    if (!isSehirSpinnerInitialized) {
-                        isSehirSpinnerInitialized = true;
-                        return;
-                    }
-
-                    String seciliSehir = (String) sehirSpinner.getSelectedItem();
-                    Map<String, List<String>> ilceMap = sehirdenIlcedenMahalleye.get(seciliSehir);
-                    List<String> ilceler = new ArrayList<>(ilceMap.keySet());
-                    Collections.sort(ilceler);
-                    ArrayAdapter<String> ilceAdapter = new ArrayAdapter<>(MainActivity.this, android.R.layout.simple_spinner_dropdown_item, ilceler);
-                    ilceSpinner.setAdapter(ilceAdapter);
-                }
-
-                @Override public void onNothingSelected(AdapterView<?> parent) {}
-            });
-
-
-            ilceSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                @Override public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                    if (!isIlceSpinnerInitialized) {
-                        isIlceSpinnerInitialized = true;
-                        return;
-                    }
-
-                    String seciliSehir = (String) sehirSpinner.getSelectedItem();
-                    String seciliIlce = (String) ilceSpinner.getSelectedItem();
-                    List<String> mahalleler = sehirdenIlcedenMahalleye.get(seciliSehir).get(seciliIlce);
-                    Collections.sort(mahalleler);
-                    ArrayAdapter<String> mahalleAdapter = new ArrayAdapter<>(MainActivity.this, android.R.layout.simple_spinner_dropdown_item, mahalleler);
-                    mahalleSpinner.setAdapter(mahalleAdapter);
-                }
-
-                @Override public void onNothingSelected(AdapterView<?> parent) {}
-            });
-
-
-            mahalleSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                @Override public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                    if (!isMahalleSpinnerInitialized) {
-                        isMahalleSpinnerInitialized = true;
-                        return;
-                    }
-
-                    String seciliSehir = (String) sehirSpinner.getSelectedItem();
-                    String seciliIlce = (String) ilceSpinner.getSelectedItem();
-                    String seciliMahalle = (String) mahalleSpinner.getSelectedItem();
-                    if (seciliSehir != null && seciliIlce != null && seciliMahalle != null) {
-                        mMap.clear();
-                        String path = "pins/" + seciliSehir + "/" + seciliIlce + "/" + seciliMahalle + "/veri.csv";
-                        LatLng ilkPinYeri = CSVdenPinYukle(path);
-
-                        if (ilkPinYeri != null) {
-                            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(ilkPinYeri, 15f));
-                        } else {
-                            Toast.makeText(MainActivity.this, seciliMahalle + " için gösterilecek konum bulunamadı.", Toast.LENGTH_SHORT).show();
-                            LatLng defaultLocation = new LatLng(41.0165, 28.9640);
-                            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(defaultLocation, 10f));
-                        }
-                        dialog.dismiss();
-                    }
-                }
-
-                @Override public void onNothingSelected(AdapterView<?> parent) {}
-            });
-
-            dialog.show();
+        navigationView.setNavigationItemSelectedListener(item -> {
+            int id = item.getItemId();
+            if (id == R.id.nav_toplanma_alani) {
+                showToplanmaAlaniDialog();
+            }else if (id == R.id.nav_profile) {
+                startActivity(new Intent(this, ProfilActivity.class));
+            } else if (id == R.id.nav_info) {
+                startActivity(new Intent(this, InfoActivity.class));
+            } else if (id == R.id.nav_first_aid) {
+                startActivity(new Intent(this, FirstAidActivity.class));
+            } else if (id == R.id.nav_emergency) {
+                startActivity(new Intent(this, EmergencyActivity.class));
+            }
+            drawerLayout.closeDrawers();
+            return true;
         });
-
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         if (mapFragment != null) {
             mapFragment.getMapAsync(this);
         }
-
-
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
 
         fabAddPin = findViewById(R.id.fabAddPin);
         fabAddPin.setOnClickListener(v -> {
@@ -204,6 +137,97 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
         });
 
+    }
+    private void showToplanmaAlaniDialog() {
+        View dialogView = getLayoutInflater().inflate(R.layout.dialog_toplanma_alani, null);
+
+        isSehirSpinnerInitialized = false;
+        isIlceSpinnerInitialized = false;
+        isMahalleSpinnerInitialized = false;
+
+        Spinner sehirSpinner = dialogView.findViewById(R.id.sehirSpinner);
+        Spinner ilceSpinner = dialogView.findViewById(R.id.ilceSpinner);
+        Spinner mahalleSpinner = dialogView.findViewById(R.id.mahalleSpinner);
+
+        List<String> sehirler = new ArrayList<>(sehirdenIlcedenMahalleye.keySet());
+        Collections.sort(sehirler);
+        sehirler.add(0, "Lütfen bir şehir seçiniz");
+        ArrayAdapter<String> sehirAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, sehirler);
+        sehirSpinner.setAdapter(sehirAdapter);
+
+        androidx.appcompat.app.AlertDialog dialog = new androidx.appcompat.app.AlertDialog.Builder(this)
+                .setView(dialogView)
+                .create();
+        dialog.show();
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        }
+
+        sehirSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if (!isSehirSpinnerInitialized) {
+                    isSehirSpinnerInitialized = true;
+                    return;
+                }
+
+                String seciliSehir = sehirSpinner.getSelectedItem().toString();
+                Map<String, List<String>> ilceMap = sehirdenIlcedenMahalleye.get(seciliSehir);
+                List<String> ilceler = new ArrayList<>(ilceMap.keySet());
+                Collections.sort(ilceler);
+                ilceler.add(0, "Lütfen bir ilçe seçiniz");
+                ArrayAdapter<String> ilceAdapter = new ArrayAdapter<>(MainActivity.this, android.R.layout.simple_spinner_dropdown_item, ilceler);
+                ilceSpinner.setAdapter(ilceAdapter);
+            }
+
+            @Override public void onNothingSelected(AdapterView<?> parent) {}
+        });
+        ilceSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if (!isIlceSpinnerInitialized) {
+                    isIlceSpinnerInitialized = true;
+                    return;
+                }
+
+                String seciliSehir = sehirSpinner.getSelectedItem().toString();
+                String seciliIlce = ilceSpinner.getSelectedItem().toString();
+                List<String> mahalleler = sehirdenIlcedenMahalleye.get(seciliSehir).get(seciliIlce);
+                Collections.sort(mahalleler);
+                mahalleler.add(0, "Lütfen bir mahalle seçiniz");
+                ArrayAdapter<String> mahalleAdapter = new ArrayAdapter<>(MainActivity.this, android.R.layout.simple_spinner_dropdown_item, mahalleler);
+                mahalleSpinner.setAdapter(mahalleAdapter);
+            }
+
+            @Override public void onNothingSelected(AdapterView<?> parent) {}
+        });
+
+        mahalleSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if (!isMahalleSpinnerInitialized) {
+                    isMahalleSpinnerInitialized = true;
+                    return;
+                }
+
+                String seciliSehir = sehirSpinner.getSelectedItem().toString();
+                String seciliIlce = ilceSpinner.getSelectedItem().toString();
+                String seciliMahalle = mahalleSpinner.getSelectedItem().toString();
+                if (seciliSehir != null && seciliIlce != null && seciliMahalle != null) {
+                    mMap.clear();
+                    String path = "pins/" + seciliSehir + "/" + seciliIlce + "/" + seciliMahalle + "/veri.csv";
+                    LatLng ilkPinYeri = CSVdenPinYukle(path);
+
+                    if (ilkPinYeri != null) {
+                        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(ilkPinYeri, 15f));
+                    } else {
+                        Toast.makeText(MainActivity.this, seciliMahalle + " için gösterilecek konum bulunamadı.", Toast.LENGTH_SHORT).show();
+                        LatLng defaultLocation = new LatLng(41.0165, 28.9640);
+                        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(defaultLocation, 10f));
+                    }
+                    dialog.dismiss();
+                }
+            }
+
+            @Override public void onNothingSelected(AdapterView<?> parent) {}
+        });
     }
     private void sehirIlceMahalleYapisiYukle() {
         try {
@@ -304,38 +328,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             pinleriYukleBekle = false;
         }
 
-    }
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        int id = item.getItemId();
-        if (id == R.id.action_profile) {
-            if (FirebaseAuth.getInstance().getCurrentUser() != null) {
-                startActivity(new Intent(this, ProfilActivity.class));
-            } else {
-                startActivity(new Intent(this, LoginActivity.class));
-            }
-            return true;
-        }else if (id == R.id.action_info) {
-            Intent infoIntent = new Intent(MainActivity.this, InfoActivity.class);
-            startActivity(infoIntent);
-            return true;
-        } else if (id == R.id.action_first_aid) {
-            Intent firstAidIntent = new Intent(MainActivity.this, FirstAidActivity.class);
-            startActivity(firstAidIntent);
-            return true;
-        } else if (id == R.id.action_emergency) {
-            Intent emergencyIntent = new Intent(MainActivity.this, EmergencyActivity.class);
-            startActivity(emergencyIntent);
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
     }
     private void kullaniciPinleriniYukleVeGoster() {
         if (FirebaseAuth.getInstance().getCurrentUser() == null) {
