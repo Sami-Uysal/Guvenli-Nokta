@@ -1,10 +1,14 @@
-<!-- app/src/main/res/menu/drawer_menu.xml -->
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <group android:checkableBehavior="single">
-        <item android:id="@+id/nav_toplanma_alani" android:title="Toplanma Alanı Seç"></item>
-        <item android:id="@+id/nav_profile" android:title="Profil"/>
-        <item android:id="@+id/nav_info" android:title="Bilgi"/>
+        <item android:id="@+id/nav_toplanma_alani" android:title="Toplanma Alanı Seç"/>
+        <item android:id="@+id/nav_info" android:title="Bilgilendirme"/>
         <item android:id="@+id/nav_first_aid" android:title="İlk Yardım"/>
         <item android:id="@+id/nav_emergency" android:title="Acil Durum"/>
+    </group>
+    <group android:id="@+id/group_profile" android:checkableBehavior="none">
+        <item
+            android:id="@+id/nav_profile"
+            android:title="Profil"
+            android:orderInCategory="100"/>
     </group>
 </menu>

@@ -8,6 +8,8 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -64,7 +66,18 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         navigationView = findViewById(R.id.navigation_view);
 
         FloatingActionButton fabMenu = findViewById(R.id.fabMenu);
-        fabMenu.setOnClickListener(v -> drawerLayout.openDrawer(GravityCompat.START));
+        fabMenu.setOnClickListener(v ->{
+            NavigationView navigationView = findViewById(R.id.navigation_view);
+            Menu menu = navigationView.getMenu();
+            MenuItem profileItem = menu.findItem(R.id.nav_profile);
+
+            if (FirebaseAuth.getInstance().getCurrentUser() != null) {
+                profileItem.setTitle("Profil");
+            } else {
+                profileItem.setTitle("Giriş Yap");
+            }
+            drawerLayout.openDrawer(GravityCompat.START);
+        });
 
         sehirIlceMahalleYapisiYukle();
 
@@ -73,7 +86,11 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             if (id == R.id.nav_toplanma_alani) {
                 showToplanmaAlaniDialog();
             }else if (id == R.id.nav_profile) {
-                startActivity(new Intent(this, ProfilActivity.class));
+                if (FirebaseAuth.getInstance().getCurrentUser() != null) {
+                    startActivity(new Intent(this, ProfilActivity.class));
+                } else {
+                    startActivity(new Intent(this, LoginActivity.class));
+                }
             } else if (id == R.id.nav_info) {
                 startActivity(new Intent(this, InfoActivity.class));
             } else if (id == R.id.nav_first_aid) {

@@ -1,61 +1,148 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- app/src/main/res/layout/activity_info.xml -->
-<com.google.android.material.card.MaterialCardView
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_margin="16dp"
-    android:backgroundTint="@color/md_theme_background"
-    tools:context=".InfoActivity">
+    android:padding="16dp"
+    android:background="?android:colorBackground"
+    android:fitsSystemWindows="true"
+    >
 
-    <RelativeLayout
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/textViewDisasterGuide"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Afet Rehberi"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        android:paddingBottom="8dp"
+        android:paddingLeft="12dp"
+        android:paddingTop="12dp"
+        />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerViewDisasters"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:padding="16dp">
+        android:layout_height="wrap_content"
+        android:clipToPadding="false"
+        android:padding="16dp"
+        app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+        app:spanCount="2"
+        tools:listitem="@layout/item_disaster_card"
+        />
 
-        <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/textViewInfoTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Afet Bilgilendirme"
-            android:textSize="24sp"
-            android:textStyle="bold"
-            android:layout_alignParentTop="true"
-            android:layout_centerHorizontal="true"
-            android:layout_marginBottom="16dp"/>
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/textViewWeatherTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Hava Durumu Tahmini"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        android:paddingTop="16dp"
+        android:paddingBottom="8dp"
+        android:paddingLeft="12dp"
+        />
 
-        <Spinner
-            android:id="@+id/spinnerDisasterType"
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/cardWeatherForecast"
+        style="@style/Widget.Material3.CardView.Elevated"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="24dp"
+        android:padding="16dp"
+        app:cardCornerRadius="16dp">
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/textViewInfoTitle"
-            android:layout_marginBottom="16dp"
-            android:spinnerMode="dropdown"
-            android:prompt="@string/afet_seciniz"/>
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:background="?attr/colorPrimary"
+            android:padding="12dp">
 
-        <ImageView
-            android:id="@+id/imageViewDisasterGif"
-            android:layout_width="match_parent"
-            android:layout_height="200dp"
-            android:layout_below="@id/spinnerDisasterType"
-            android:scaleType="centerInside"
-            android:layout_marginBottom="16dp"
-            android:contentDescription="Afet Bilgi GIF'i"/>
+            <ImageView
+                android:id="@+id/weatherIcon"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:contentDescription="Hava Durumu Simgesi"
+                android:layout_marginEnd="12dp"
+                app:tint="?attr/colorOnPrimary" />
 
-        <ScrollView
-            android:id="@+id/scrollViewInfo"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_below="@id/imageViewDisasterGif"
-            android:layout_alignParentBottom="true">
-            <com.google.android.material.textview.MaterialTextView
-                android:id="@+id/textViewDisasterInfo"
-                android:layout_width="match_parent"
+            <LinearLayout
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:textSize="16sp"
-                android:lineSpacingExtra="4dp"
-                tools:text="Lütfen bir afet türü seçin."/>
-        </ScrollView>
-    </RelativeLayout>
-</com.google.android.material.card.MaterialCardView>
+                android:orientation="vertical"
+                android:layout_weight="1">
+
+                <TextView
+                    android:id="@+id/textViewCityName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="İstanbul"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:textColor="?attr/colorOnPrimary" />
+
+                <TextView
+                    android:id="@+id/textViewWeatherInfo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Güneşli, 25°C"
+                    android:textSize="15sp"
+                    android:textColor="?attr/colorOnPrimary"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginBottom="4dp" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginBottom="2dp">
+
+                    <ImageView
+                        android:src="@drawable/nem"
+                        android:layout_width="18dp"
+                        android:layout_height="18dp"
+                        android:layout_marginEnd="4dp"
+                        android:contentDescription="Nem"
+                        app:tint="?attr/colorOnPrimary"/>
+                    <TextView
+                        android:id="@+id/textViewHumidity"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Nem: %60"
+                        android:textSize="15sp"
+                        android:textColor="?attr/colorOnPrimary"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
+
+                    <ImageView
+                        android:src="@drawable/ruzgar"
+                        android:layout_width="18dp"
+                        android:layout_height="18dp"
+                        android:layout_marginEnd="4dp"
+                        android:contentDescription="Rüzgar"
+                        app:tint="?attr/colorOnPrimary"/>
+                    <TextView
+                        android:id="@+id/textViewWind"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Rüzgar: 10 km/s"
+                        android:textSize="15sp"
+                        android:textColor="?attr/colorOnPrimary"/>
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
+
+</LinearLayout>

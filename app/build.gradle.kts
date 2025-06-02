@@ -21,6 +21,11 @@ android {
             "API_KEY",
             "\"${project.property("API_KEY")}\""
         )
+        buildConfigField(
+            "String",
+            "WEATHER_API_KEY",
+            "\"${project.property("WEATHER_API_KEY")}\""
+        )
         manifestPlaceholders["MAPS_API_KEY"] = project.property("API_KEY") as String
     }
 
@@ -55,7 +60,10 @@ dependencies {
     implementation("androidx.drawerlayout:drawerlayout:1.2.0")
     implementation("com.google.android.material:material:1.10.0")
     implementation("com.google.maps.android:android-maps-utils:3.4.0")
+    implementation("com.google.firebase:firebase-firestore")
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
+    implementation("com.google.android.gms:play-services-location:21.0.1")
     implementation("com.github.bumptech.glide:glide:4.12.0")
     annotationProcessor("com.github.bumptech.glide:compiler:4.12.0")
-    implementation("com.google.firebase:firebase-firestore")
 }
