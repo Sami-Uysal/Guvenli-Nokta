@@ -1,6 +1,7 @@
 package com.guvenlinokta.app;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,6 +35,31 @@ public class DisasterItemAdapter extends RecyclerView.Adapter<DisasterItemAdapte
         DisasterInfo disaster = disasterList.get(position);
         holder.textTitle.setText(disaster.getName());
         holder.imageIcon.setImageResource(disaster.getIconResId());
+        holder.itemView.setOnClickListener(v -> {
+            Context context = v.getContext();
+            Intent intent = null;
+            switch (disaster.getName()) {
+                case "Deprem":
+                    intent = new Intent(context, com.guvenlinokta.app.info.Deprem.class);
+                    break;
+                case "Sel":
+                    intent = new Intent(context, com.guvenlinokta.app.info.Sel.class);
+                    break;
+                case "Yangın":
+                    intent = new Intent(context, com.guvenlinokta.app.info.Yangin.class);
+                    break;
+                case "Hortum":
+                    intent = new Intent(context, com.guvenlinokta.app.info.Hortum.class);
+                    break;
+                case "Çığ":
+                    intent = new Intent(context, com.guvenlinokta.app.info.Cig.class);
+                    break;
+                case "Heyelan":
+                    intent = new Intent(context, com.guvenlinokta.app.info.Heyelan.class);
+                    break;
+            }
+            if (intent != null) context.startActivity(intent);
+        });
     }
 
     @Override

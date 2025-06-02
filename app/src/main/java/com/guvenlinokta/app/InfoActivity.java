@@ -1,5 +1,6 @@
 package com.guvenlinokta.app;
 
+import android.net.Uri;
 import android.os.Bundle;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -26,8 +27,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.guvenlinokta.app.BuildConfig;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
+import coil.ImageLoader;
 
 public class InfoActivity extends AppCompatActivity {
     private FusedLocationProviderClient fusedLocationClient;
@@ -111,6 +115,7 @@ public class InfoActivity extends AppCompatActivity {
         TextView weatherInfo = findViewById(R.id.textViewWeatherInfo);
         TextView humidityView = findViewById(R.id.textViewHumidity);
         TextView windView = findViewById(R.id.textViewWind);
+
         WeatherService service = retrofit.create(WeatherService.class);
         Call<WeatherResponse> call = service.getWeatherByLocation(lat, lon, apikey, "metric", "tr");
         call.enqueue(new Callback<WeatherResponse>() {
@@ -160,8 +165,9 @@ public class InfoActivity extends AppCompatActivity {
         return String.format(Locale.getDefault(), "%.1f km/s", speed * 3.6);
     }
     private void loadWeatherIcon(String iconCode, ImageView imageView) {
-        String iconUrl = "https://openweathermap.org/img/wn/" + iconCode + "@2x.png";
-        Glide.with(this).load(iconUrl).into(imageView);
+
+        String iconUrl = iconUrlMap.containsKey(iconCode) ? iconUrlMap.get(iconCode) : "https://raw.githubusercontent.com/Makin-Things/weather-icons/master/animated/cloudy.svg";
+        CoilUtilsKt.loadSvg(imageView, iconUrl);
     }
     private String translateDescription(String description) {
         switch (description.toLowerCase()) {
