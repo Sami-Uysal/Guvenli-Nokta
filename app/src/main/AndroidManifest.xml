@@ -45,9 +45,6 @@
             android:name=".ProfilActivity"
             android:exported="false" />
         <activity
-            android:name=".EmergencyActivity"
-            android:exported="false" />
-        <activity
             android:name=".ilkyardim.FirstAidActivity"
             android:exported="false" />
         <activity android:name=".ilkyardim.FirstAidDetailActivity"

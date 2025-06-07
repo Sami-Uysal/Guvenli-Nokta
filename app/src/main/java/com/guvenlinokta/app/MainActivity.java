@@ -36,6 +36,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import android.net.Uri;
 
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.button.MaterialButton;
@@ -101,7 +102,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             } else if (id == R.id.nav_first_aid) {
                 startActivity(new Intent(this, FirstAidActivity.class));
             } else if (id == R.id.nav_emergency) {
-                startActivity(new Intent(this, EmergencyActivity.class));
+                Intent intent = new Intent(Intent.ACTION_DIAL);
+                intent.setData(Uri.parse("tel:112"));
+                startActivity(intent);
             }
             drawerLayout.closeDrawers();
             return true;

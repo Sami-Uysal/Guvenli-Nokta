@@ -3,7 +3,7 @@
         <item android:id="@+id/nav_toplanma_alani" android:title="Toplanma Alanı Seç"/>
         <item android:id="@+id/nav_info" android:title="Bilgilendirme"/>
         <item android:id="@+id/nav_first_aid" android:title="İlk Yardım"/>
-        <item android:id="@+id/nav_emergency" android:title="Acil Durum"/>
+        <item android:id="@+id/nav_emergency" android:title="112'yi Ara"/>
     </group>
     <group android:id="@+id/group_profile" android:checkableBehavior="none">
         <item
