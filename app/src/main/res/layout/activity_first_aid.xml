@@ -1,38 +1,66 @@
-<!-- app/src/main/res/layout/activity_first_aid.xml -->
-<com.google.android.material.card.MaterialCardView
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_margin="16dp"
-    android:backgroundTint="@color/md_theme_background"
-    tools:context=".FirstAidActivity">
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:background="?android:colorBackground"
+    android:fitsSystemWindows="true"
+    tools:context=".ilkyardim.FirstAidActivity"
+    android:layout_margin="10dp">
 
-    <ScrollView
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:padding="16dp">
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center_horizontal"
+        android:layout_marginBottom="16dp">
 
-        <LinearLayout
-            android:layout_width="match_parent"
+        <TextView
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:text="İlk Yardım"
+            android:textColor="?attr/colorOnPrimary"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:layout_marginTop="4dp"/>
+    </LinearLayout>
 
-            <com.google.android.material.textview.MaterialTextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Afet Durumlarında İlk Yardım"
-                android:textSize="24sp"
-                android:textStyle="bold"
-                android:layout_marginBottom="16dp"/>
+    <EditText
+        android:id="@+id/editTextSearch"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="İlk yardım konularında ara..."
+        android:textColorHint="#A0A0A0"
+        android:textColor="@android:color/white"
+        android:background="@drawable/arama_arkaplani"
+        android:drawablePadding="12dp"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:paddingTop="14dp"
+        android:paddingBottom="14dp"
+        android:inputType="text"
+        android:maxLines="1"
+        android:layout_marginBottom="16dp"/>
 
-            <com.google.android.material.textview.MaterialTextView
-                android:id="@+id/textViewFirstAidContent"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textSize="16sp"
-                android:lineSpacingExtra="4dp"
-                android:text="Buraya ilk yardım bilgileri gelecek..."/>
-        </LinearLayout>
-    </ScrollView>
-</com.google.android.material.card.MaterialCardView>
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerViewFirstAidTopics"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:scrollbars="vertical" />
+
+    <TextView
+        android:id="@+id/textViewNoResults"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Arama sonucu bulunamadı."
+        android:textColor="@android:color/darker_gray"
+        android:textSize="16sp"
+        android:gravity="center"
+        android:visibility="gone"
+        android:layout_marginTop="16dp"/>
+
+</LinearLayout>

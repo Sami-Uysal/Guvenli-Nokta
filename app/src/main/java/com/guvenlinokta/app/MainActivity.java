@@ -1,7 +1,6 @@
 package com.guvenlinokta.app;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -44,7 +43,7 @@ import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-
+import com.guvenlinokta.app.ilkyardim.FirstAidActivity;
 
 
 public class MainActivity extends AppCompatActivity implements OnMapReadyCallback {

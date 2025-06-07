@@ -1,6 +1,5 @@
 package com.guvenlinokta.app;
 
-import android.net.Uri;
 import android.os.Bundle;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -16,7 +15,6 @@ import android.location.Location;
 import android.os.Looper;
 import androidx.core.app.ActivityCompat;
 
-import com.bumptech.glide.Glide;
 import com.google.android.gms.location.*;
 
 import androidx.annotation.Nullable;
@@ -24,14 +22,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.guvenlinokta.app.BuildConfig;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import coil.ImageLoader;
 
 public class InfoActivity extends AppCompatActivity {
     private FusedLocationProviderClient fusedLocationClient;
@@ -111,10 +106,10 @@ public class InfoActivity extends AppCompatActivity {
                 .baseUrl("https://api.openweathermap.org/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
-        TextView cityName = findViewById(R.id.textViewCityName);
-        TextView weatherInfo = findViewById(R.id.textViewWeatherInfo);
-        TextView humidityView = findViewById(R.id.textViewHumidity);
-        TextView windView = findViewById(R.id.textViewWind);
+        TextView sehirismi = findViewById(R.id.textViewCityName);
+        TextView havaDurumu = findViewById(R.id.textViewWeatherInfo);
+        TextView nemView = findViewById(R.id.textViewHumidity);
+        TextView ruzgarView = findViewById(R.id.textViewWind);
 
         WeatherService service = retrofit.create(WeatherService.class);
         Call<WeatherResponse> call = service.getWeatherByLocation(lat, lon, apikey, "metric", "tr");
@@ -126,21 +121,21 @@ public class InfoActivity extends AppCompatActivity {
                     int sicaklik = Math.round(response.body().main.temp);
                     String sehir = response.body().name;
                     String iconCode = response.body().weather.get(0).icon;
-                    int humidity = response.body().main.humidity;
-                    float windSpeed = response.body().wind != null ? response.body().wind.speed : 0;
+                    int nem = response.body().main.humidity;
+                    float ruzgarhizi = response.body().wind != null ? response.body().wind.speed : 0;
 
                     runOnUiThread(() -> {
-                        cityName.setText(sehir);
-                        weatherInfo.setText(durum + ", " + formatTemperature(sicaklik));
-                        humidityView.setText("Nem: %" + humidity);
-                        windView.setText("Rüzgar: " + formatWindSpeed(windSpeed));
+                        sehirismi.setText(sehir);
+                        havaDurumu.setText(durum + ", " + formatSicaklik(sicaklik));
+                        nemView.setText("Nem: %" + nem);
+                        ruzgarView.setText("Rüzgar: " + formatRuzgarHizi(ruzgarhizi));
                         loadWeatherIcon(iconCode, findViewById(R.id.weatherIcon));
                     });
                 }
             }
             @Override
             public void onFailure(Call<WeatherResponse> call, Throwable t) {
-                weatherInfo.setText("Hava durumu alınamadı. Lütfen internet bağlantınızı kontrol edin.");
+                havaDurumu.setText("Hava durumu alınamadı. Lütfen internet bağlantınızı kontrol edin.");
             }
         });
     }
@@ -157,17 +152,37 @@ public class InfoActivity extends AppCompatActivity {
         if (metin == null || metin.isEmpty()) return metin;
         return metin.substring(0, 1).toUpperCase() + metin.substring(1);
     }
-    private String formatTemperature(float temp) {
+    private String formatSicaklik(float temp) {
         return String.format(Locale.getDefault(), "%.1f°C", temp);
     }
 
-    private String formatWindSpeed(float speed) {
+    private String formatRuzgarHizi(float speed) {
         return String.format(Locale.getDefault(), "%.1f km/s", speed * 3.6);
     }
     private void loadWeatherIcon(String iconCode, ImageView imageView) {
+        Map<String, Integer> iconResMap = new HashMap<>();
+        iconResMap.put("01d", R.drawable.acik_gunduz);
+        iconResMap.put("01n", R.drawable.acik_gece);
+        iconResMap.put("02d", R.drawable.bulutlu_gunduz);
+        iconResMap.put("02n", R.drawable.bulutlu_gece);
+        iconResMap.put("03d", R.drawable.bulutlu_gunduz);
+        iconResMap.put("03n", R.drawable.bulutlu_gece);
+        iconResMap.put("04d", R.drawable.parcali_bulutlu);
+        iconResMap.put("04n", R.drawable.parcali_bulutlu);
+        iconResMap.put("09d", R.drawable.rainy_1_day);
+        iconResMap.put("09n", R.drawable.rainy_1_night);
+        iconResMap.put("10d", R.drawable.rainy_3_day);
+        iconResMap.put("10n", R.drawable.rainy_3_night);
+        iconResMap.put("11d", R.drawable.firtina);
+        iconResMap.put("11n", R.drawable.firtina);
+        iconResMap.put("13d", R.drawable.kar);
+        iconResMap.put("13n", R.drawable.kar);
+        iconResMap.put("50d", R.drawable.fog);
+        iconResMap.put("50n", R.drawable.fog);
 
-        String iconUrl = iconUrlMap.containsKey(iconCode) ? iconUrlMap.get(iconCode) : "https://raw.githubusercontent.com/Makin-Things/weather-icons/master/animated/cloudy.svg";
-        CoilUtilsKt.loadSvg(imageView, iconUrl);
+        int resId = iconResMap.containsKey(iconCode) ? iconResMap.get(iconCode) : R.drawable.parcali_bulutlu;
+        imageView.setImageResource(resId);
+
     }
     private String translateDescription(String description) {
         switch (description.toLowerCase()) {

@@ -33,6 +33,9 @@
             android:name=".info.Yangin"
             android:exported="false" />
         <activity
+            android:name=".info.DetailCardActivity"
+            android:exported="false" />
+        <activity
             android:name=".info.Sel"
             android:exported="false" />
         <activity
@@ -45,7 +48,9 @@
             android:name=".EmergencyActivity"
             android:exported="false" />
         <activity
-            android:name=".FirstAidActivity"
+            android:name=".ilkyardim.FirstAidActivity"
+            android:exported="false" />
+        <activity android:name=".ilkyardim.FirstAidDetailActivity"
             android:exported="false" />
         <activity
             android:name=".InfoActivity"
