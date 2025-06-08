@@ -1,42 +1,150 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
-    android:padding="24dp"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="?android:colorBackground"
+    android:fitsSystemWindows="true"
+    android:layout_margin="10dp"
+    tools:context=".ProfilActivity">
 
-    <DatePicker
-        android:id="@+id/tarihSecici"
-        android:layout_width="wrap_content"
+
+    <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:calendarViewShown="true" />
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:paddingBottom="24dp">
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/profilResmiImageView"
+            android:layout_width="96dp"
+            android:layout_height="96dp"
+            android:padding="2dp"
+            android:src="@drawable/profil"
+            app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.Corner.Full"
+            app:strokeColor="?attr/colorPrimary"
+            android:scaleType="centerCrop"
+            app:strokeWidth="2dp"/>
+
+        <TextView
+            android:id="@+id/isimTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="Kullanıcı"
+            android:textColor="?attr/colorOnPrimary"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/emailTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="1@gmail.com"
+            android:textColor="?attr/colorOnSurfaceVariant"
+            android:textSize="14sp" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/yuvarlak_arkaplan" android:orientation="vertical"
+        android:padding="8dp">
+
+        <RelativeLayout
+            android:id="@+id/profiliDuzenleLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:focusable="true"
+            android:background="?attr/selectableItemBackground"
+            android:padding="12dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:text="Profili Düzenle"
+                android:textColor="?attr/colorOnPrimary"
+                android:textSize="16sp" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:src="@drawable/ic_sag_ok" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/pinlerimLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="12dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:text="Kayıtlı Pinler"
+                android:textColor="?attr/colorOnPrimary"
+                android:textSize="16sp" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:src="@drawable/ic_sag_ok" /> </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/bildirimlerLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="12dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:text="Bildirimler"
+                android:textColor="?attr/colorOnPrimary"
+                android:textSize="16sp" />
+
+            <com.google.android.material.switchmaterial.SwitchMaterial
+                android:id="@+id/bildirimSwitch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:checked="true"
+                android:thumbTint="?attr/colorOnPrimary"
+                />
+        </RelativeLayout>
+
+    </LinearLayout>
 
     <TextView
-        android:id="@+id/kalanSureText"
+        android:id="@+id/cikisYapTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Kalan Süre: "
-        android:textSize="18sp"
-        android:layout_marginTop="16dp"/>
-    <Button
-        android:id="@+id/btnPinleriYukle"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Pinleri Yükle"
-        android:layout_marginTop="16dp"/>
-
-    <ProgressBar
-        android:id="@+id/ilerlemeCubugu"
-        style="?android:attr/progressBarStyleHorizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:max="100"
-        android:layout_marginTop="16dp"/>
-    <Button
-        android:id="@+id/btnCikis"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="32dp"
+        android:padding="12dp"
         android:text="Çıkış Yap"
-        android:layout_marginTop="16dp"/>
+        android:textColor="#FF4949"
+        android:textSize="16sp"
+        android:textStyle="bold" />
 
 </LinearLayout>
+</ScrollView>

@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    android:layout_margin="12dp"
+    tools:context=".profil.EditProfile">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/kullaniciAdiGirdiLayout"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Kullanıcı Adı">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/kullaniciAdiMetinKutusu"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textPersonName" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/mevcutSifreGirdiLayout"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            app:passwordToggleEnabled="true"
+            android:hint="Mevcut Şifre (Şifre Değişikliği İçin Gerekli)">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/mevcutSifreMetinKutusu"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textPassword" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/yeniSifreGirdiLayout"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            app:passwordToggleEnabled="true"
+            android:hint="Yeni Şifre (Değiştirmek istemiyorsanız boş bırakın)">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/yeniSifreMetinKutusu"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textPassword" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:text="Doğum Tarihi:"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/dogumTarihiMetni"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:background="?attr/editTextBackground"
+            android:padding="12dp"
+            android:text="Seçilmedi"
+            android:textSize="16sp"
+            android:clickable="true"
+            android:focusable="true"
+            android:drawableEnd="@android:drawable/ic_menu_my_calendar"
+            android:drawablePadding="8dp"/>
+
+
+        <Button
+            android:id="@+id/kaydetButonu"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:text="Değişiklikleri Kaydet" />
+
+    </LinearLayout>
+</ScrollView>

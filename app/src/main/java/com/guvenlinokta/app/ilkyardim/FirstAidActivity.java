@@ -142,6 +142,53 @@ public class FirstAidActivity extends AppCompatActivity {
                         "Kısa Mesafede Süratli Taşıma Teknikleri:\n- Kucakta Taşıma.\n- İtfaiyeci Yöntemi (Omuzda taşıma).\n- Sırtta Taşıma.\n\n" +
                         "Sedye İle Taşıma Teknikleri:\n- Kaşık Tekniği.\n- Köprü Tekniği.\n- Karşılıklı Durarak Kaldırma."
         ));
+        firstAidTopicsMap.put("genel_ilkyardim_bilgileri", new FirstAidTopic(
+                "Genel İlkyardım Bilgileri",
+                "İlkyardım Nedir?:\n- Herhangi bir kaza veya yaşamı tehlikeye düşüren durumda, sağlık görevlileri gelene kadar hayatın kurtarılması ya da durumun kötüleşmesini önlemek amacıyla olay yerinde, tıbbi araç gereç olmadan, mevcut imkanlarla yapılan ilaçsız uygulamalardır.\n\n" +
+                        "İlkyardımın Öncelikli Amaçları:\n- Hayati tehlikeyi ortadan kaldırmak.\n- Yaşamsal fonksiyonların sürdürülmesini sağlamak.\n- Hasta/yaralının durumunun kötüleşmesini önlemek.\n- İyileşmeyi kolaylaştırmak.\n\n" +
+                        "İlkyardımın Temel Uygulamaları (KBK):\n- Koruma: Olay yerinde olası tehlikeleri belirleyerek güvenli bir çevre oluşturmak.\n- Bildirme: En hızlı şekilde 112'yi aramak.\n- Kurtarma (Müdahale): Olay yerinde hasta/yaralılara hızlı ancak sakin bir şekilde müdahale etmek."
+        ));
+
+        firstAidTopicsMap.put("olay_yeri_degerlendirme", new FirstAidTopic(
+                "Hasta/Yaralının ve Olay Yerinin Değerlendirilmesi",
+                "Olay Yerinin Değerlendirilmesi:\n- Tekrar kaza olma riskini ortadan kaldırmak.\n- Olay yerindeki hasta/yaralı sayısını ve türlerini belirlemek.\n- Olay yerini hızla değerlendirerek yapılacak müdahaleleri planlamak.\n\n" +
+                        "Hasta/Yaralının Değerlendirilmesi (Birinci Değerlendirme - ABC):\n- Bilinç durumunun değerlendirilmesi.\n- (A) Hava yolu açıklığının değerlendirilmesi.\n- (B) Solunumun değerlendirilmesi (Bak-Dinle-Hisset).\n- (C) Dolaşımın değerlendirilmesi (Nabız, kanama kontrolü).\n\n" +
+                        "İkinci Değerlendirme:\n- Baştan aşağı kontrol yapılarak kırık, kanama, yara vb. olup olmadığının kontrol edilmesi."
+        ));
+
+        firstAidTopicsMap.put("temel_yasam_destegi", new FirstAidTopic(
+                "Temel Yaşam Desteği (TYD)",
+                "Tanım:\n- Solunumu veya kalbi durmuş kişiye yapay solunum ile akciğerlerine oksijen gitmesini, dış kalp masajı ile de kalpten kan pompalanmasını sağlamak üzere yapılan ilaçsız müdahalelerdir.\n\n" +
+                        "Yetişkinlerde TYD:\n1. Güvenliği sağlayın, bilinç kontrolü yapın.\n2. 112'yi aratın.\n3. Ağız içini kontrol edin, hava yolunu açın (Baş-Geri Çene-Yukarı).\n4. Solunumu kontrol edin (Bak-Dinle-Hisset, 10 sn).\n5. Solunum yoksa 2 kurtarıcı nefes verin.\n6. Kalp masajı için göğüs merkezini belirleyin.\n7. 30 kalp masajı uygulayın (Dakikada 100-120 bası, 5-6 cm çöktürerek).\n8. 30 kalp masajı ve 2 yapay solunumu 5 tur tekrarlayın.\n\n" +
+                        "Çocuklarda (1-8 Yaş) ve Bebeklerde (0-1 Yaş) TYD benzerdir, ancak bası gücü ve tekniği farklıdır (Çocukta tek el, bebekte iki parmak)."
+        ));
+
+        firstAidTopicsMap.put("bilinc_bozukluklari", new FirstAidTopic(
+                "Bilinç Bozukluklarında İlkyardım",
+                "Bayılma (Senkop):\n- Kişi sırtüstü yatırılır, ayakları 30 cm kaldırılır (Şok Pozisyonu).\n- Sıkan giysiler gevşetilir.\n- Ortamın havalandırılması sağlanır.\n- Kusma varsa yan pozisyonda tutulur.\n- Duyu organları (koklatma vb.) uyarılmaz.\n\n" +
+                        "Koma:\n- Kişinin bilinci kapalıdır ancak solunum ve nabız vardır.\n- Solunum yolunu açık tutmak ve kusmuğun solunum yoluna kaçmasını engellemek için Koma (Yarı Yüzükoyun-Yan) Pozisyonu verilir.\n- 2-3 dakikada bir solunum ve nabız kontrol edilir.\n- Tıbbi yardım gelene kadar yalnız bırakılmaz.\n\n" +
+                        "Havale (Sara Krizi/Epilepsi):\n- Olayla ilgili güvenlik önlemleri alınır (Kişinin kendine zarar vermesini engellemek).\n- Kriz kendi sürecini tamamlamaya bırakılır.\n- Kilitlenmiş çene açılmaya çalışılmaz, soğan vb. koklatılmaz.\n- Kriz sonrası koma pozisyonu verilir ve 112 aranır."
+        ));
+        firstAidTopicsMap.put("hayvan_isirmalari", new FirstAidTopic(
+                "Hayvan Isırmalarında İlkyardım",
+                "Kedi, Köpek Isırmaları:\n- Yara 5 dakika sabunlu su ile yıkanır.\n- Yaranın üzeri temiz bir bezle kapatılır.\n- Kuduz ve/veya tetanoz aşısı için sağlık kuruluşuna başvurulması önerilir.\n\n" +
+                        "Arı Sokması:\n- Görünen iğne varsa çıkarılır.\n- Soğuk uygulama yapılır.\n- Eğer ağızdan sokmuşsa ve solunumu güçleştiriyorsa buz emmesi sağlanır.\n- Alerji öyküsü olanlar en yakın sağlık kuruluşuna gitmelidir.\n\n" +
+                        "Akrep/Yılan Sokması:\n- Isırılan bölge hareket ettirilmez, sakin kalınır.\n- Yara su ile yıkanır.\n- Isırılan bölgeye soğuk uygulama yapılır.\n- Kan dolaşımını engelleyecek takı, sıkı giysi vb. çıkarılır.\n- Yara emilmez, kesilmez. Hemen 112 aranır."
+        ));
+
+        firstAidTopicsMap.put("yabanci_cisim_kacmasi", new FirstAidTopic(
+                "Göz, Kulak ve Buruna Yabancı Cisim Kaçmasında İlkyardım",
+                "Göze Yabancı Cisim Kaçması:\n- Toz gibi küçük bir cisimse: Göz bol su ile yıkanır veya alt göz kapağı aşağı çekilerek, üst göz kapağı ise üzerine çevrilerek cisim aranır. Temiz ve nemli bir bezle çıkarılmaya çalışılır.\n- Batan bir cisimse: Cisme dokunulmaz. Göz hareket etmeyecek şekilde iki göz birden kapatılır ve tıbbi yardım istenir.\n\n" +
+                        "Kulağa Yabancı Cisim Kaçması:\n- Kesinlikle sivri ve delici bir cisimle müdahale edilmez.\n- Su değdirilmez.\n- Tıbbi yardım istenir.\n\n" +
+                        "Buruna Yabancı Cisim Kaçması:\n- Burun duvarına bastırılarak kuvvetli bir nefes verme ile cismin atılması sağlanır.\n- Çıkmazsa tıbbi yardım istenir."
+        ));
+        firstAidTopicsMap.put("hasta_yarali_tasima", new FirstAidTopic(
+                "Hasta/Yaralı Taşıma Teknikleri",
+                "Genel Taşıma Kuralları:\n- Hasta/yaralıya yakın mesafede çalışılmalı.\n- Sırt düz tutulmalı, dizler bükülerek ağırlık kaldırılmalı.\n- Ani hareketlerden kaçınılmalı.\n- Mümkünse en az iki kişi ile taşınmalı.\n- Baş-boyun-gövde ekseni korunmalı, özellikle omurga yaralanması şüphesi varsa.\n\n" +
+                        "Acil Taşıma Teknikleri (Tehlikeli ortamdan uzaklaştırma):\n- Sürükleme Yöntemleri (Ayak bileklerinden, koltuk altından, battaniye ile).\n- Rentek Manevrası (Araç içinden çıkarma).\n\n" +
+                        "Kısa Mesafede Süratli Taşıma Teknikleri:\n- Kucakta Taşıma.\n- İtfaiyeci Yöntemi (Omuzda taşıma).\n- Sırtta Taşıma.\n\n" +
+                        "Sedye İle Taşıma Teknikleri:\n- Kaşık Tekniği.\n- Köprü Tekniği.\n- Karşılıklı Durarak Kaldırma."
+        ));
 
         allFirstAidTopics.clear();
         allFirstAidTopics.addAll(firstAidTopicsMap.values());

@@ -26,6 +26,10 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -59,6 +63,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private DrawerLayout drawerLayout;
     private NavigationView navigationView;
     private com.google.android.gms.location.FusedLocationProviderClient fusedLocationClient;
+    private boolean tekPinYukleBekle = false;
+    private String bekleyenTekPinAdi;
+    private double bekleyenTekPinLat;
+    private double bekleyenTekPinLng;
 
 
     @Override
@@ -333,8 +341,28 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     protected void onResume() {
         super.onResume();
-        if (getIntent().getBooleanExtra("pinleriYukle", false)) {
-            getIntent().removeExtra("pinleriYukle");
+        Intent intent = getIntent();
+
+        if (intent.getBooleanExtra("tekPinYukle", false)) {
+            String pinAd = intent.getStringExtra("pinAd");
+            double pinLat = intent.getDoubleExtra("pinLat", 0);
+            double pinLng = intent.getDoubleExtra("pinLng", 0);
+
+            intent.removeExtra("tekPinYukle");
+            intent.removeExtra("pinAd");
+            intent.removeExtra("pinLat");
+            intent.removeExtra("pinLng");
+
+            if (mMap == null) {
+                tekPinYukleBekle = true;
+                bekleyenTekPinAdi = pinAd;
+                bekleyenTekPinLat = pinLat;
+                bekleyenTekPinLng = pinLng;
+            } else {
+                haritadaTekPinGoster(pinAd, pinLat, pinLng);
+            }
+        } else if (intent.getBooleanExtra("pinleriYukle", false)) {
+            intent.removeExtra("pinleriYukle");
             if (mMap == null) {
                 pinleriYukleBekle = true;
             } else {
@@ -345,18 +373,33 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     public void onMapReady(@NonNull GoogleMap googleMap) {
         mMap = googleMap;
-        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            mMap.setMyLocationEnabled(true);
-            fusedLocationClient.getLastLocation().addOnSuccessListener(location -> {
-                if (location != null) {
-                    LatLng myLatLng = new LatLng(location.getLatitude(), location.getLongitude());
-                    mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(myLatLng, 16f));
-                }
-            });
-        }
-        if (pinleriYukleBekle) {
+        boolean isPinCameraActionTaken = false;
+
+        if (tekPinYukleBekle) {
+            haritadaTekPinGoster(bekleyenTekPinAdi, bekleyenTekPinLat, bekleyenTekPinLng);
+            tekPinYukleBekle = false;
+            bekleyenTekPinAdi = null;
+            bekleyenTekPinLat = 0.0;
+            bekleyenTekPinLng = 0.0;
+            isPinCameraActionTaken = true;
+        } else if (pinleriYukleBekle) {
             kullaniciPinleriniYukleVeGoster();
             pinleriYukleBekle = false;
+            isPinCameraActionTaken = true;
+        }
+
+        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            mMap.setMyLocationEnabled(true);
+            if (!isPinCameraActionTaken) {
+                fusedLocationClient.getLastLocation().addOnSuccessListener(this, location -> {
+                    if (location != null && mMap != null) {
+                        LatLng myLatLng = new LatLng(location.getLatitude(), location.getLongitude());
+                        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(myLatLng, 17f));
+                    }
+                });
+            }
+        } else {
+            ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, 1);
         }
 
     }
@@ -370,42 +413,67 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
     }
     private void kullaniciPinleriniYukleVeGoster() {
-        if (FirebaseAuth.getInstance().getCurrentUser() == null) {
-            Toast.makeText(this, "Kullanıcı oturumu yok.", Toast.LENGTH_SHORT).show();
+        FirebaseUser mevcutKullanici = FirebaseAuth.getInstance().getCurrentUser();
+        if (mevcutKullanici == null) {
+            Toast.makeText(this, "Pinleri görmek için giriş yapmalısınız.", Toast.LENGTH_SHORT).show();
             return;
         }
         if (mMap == null) {
-            Toast.makeText(this, "Harita hazır değil.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Harita henüz hazır değil.", Toast.LENGTH_SHORT).show();
+            pinleriYukleBekle = true;
             return;
         }
-        String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        com.google.firebase.firestore.FirebaseFirestore.getInstance()
-                .collection("users")
-                .document(userId)
-                .collection("pins")
+
+        mMap.clear();
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection("users").document(mevcutKullanici.getUid()).collection("pins")
                 .get()
-                .addOnSuccessListener(queryDocumentSnapshots -> {
-                    mMap.clear();
-                    if (queryDocumentSnapshots.isEmpty()) {
-                        Toast.makeText(this, "Kayıtlı pin bulunamadı.", Toast.LENGTH_SHORT).show();
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        if (task.getResult() == null || task.getResult().isEmpty()) {
+                            Toast.makeText(this, "Kayıtlı pin bulunamadı.", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+                        LatLngBounds.Builder builder = new LatLngBounds.Builder();
+                        int pinSayisi = 0;
+                        for (QueryDocumentSnapshot document : task.getResult()) {
+                            Double lat = document.getDouble("lat");
+                            Double lng = document.getDouble("lng");
+                            String ad = document.getString("ad");
+
+                            if (lat != null && lng != null) {
+                                LatLng konum = new LatLng(lat, lng);
+                                mMap.addMarker(new MarkerOptions().position(konum).title(ad != null ? ad : "Kaydedilmiş Pin"));
+                                builder.include(konum);
+                                pinSayisi++;
+                            }
+                        }
+                        if (pinSayisi > 0) {
+                            mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(builder.build(), 100));
+                            Toast.makeText(this, pinSayisi + " pin başarıyla yüklendi.", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(this, "Geçerli koordinatlara sahip pin bulunamadı.", Toast.LENGTH_SHORT).show();
+                        }
                     } else {
-                        Toast.makeText(this, "Pinler başarıyla yüklendi.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, "Pinler getirilirken bir hata oluştu.", Toast.LENGTH_SHORT).show();
                     }
-                    for (com.google.firebase.firestore.DocumentSnapshot doc : queryDocumentSnapshots) {
-                        Double lat = doc.getDouble("lat");
-                        Double lng = doc.getDouble("lng");
-                        String ad = doc.getString("ad");
-                        if (lat != null && lng != null) {
-                            mMap.addMarker(new MarkerOptions().position(new LatLng(lat, lng)).title(ad != null ? ad : "Kaydedilmiş Pin"));
-                        }
-                        else {
-                            Toast.makeText(this, "Geçersiz pin verisi: " + doc.getId(), Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                })
-                .addOnFailureListener(e -> {
-                    Toast.makeText(this, "Firestore hata: " + e.getMessage(), Toast.LENGTH_LONG).show();
                 });
+    }
+
+    private void haritadaTekPinGoster(String ad, double lat, double lng) {
+        if (mMap == null) {
+            Toast.makeText(this, "Harita henüz hazır değil.", Toast.LENGTH_SHORT).show();
+            tekPinYukleBekle = true;
+            bekleyenTekPinAdi = ad;
+            bekleyenTekPinLat = lat;
+            bekleyenTekPinLng = lng;
+            return;
+        }
+        mMap.clear();
+        LatLng pinKonumu = new LatLng(lat, lng);
+        mMap.addMarker(new MarkerOptions().position(pinKonumu).title(ad));
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(pinKonumu, 15f));
+        Toast.makeText(this, "'" + ad + "' haritada gösteriliyor.", Toast.LENGTH_SHORT).show();
     }
 
 }

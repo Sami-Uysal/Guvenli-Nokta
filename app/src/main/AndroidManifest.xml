@@ -20,6 +20,12 @@
         android:theme="@style/Theme.GüvenliNokta"
         tools:targetApi="31">
         <activity
+            android:name=".profil.PinlerimActivity"
+            android:exported="false" />
+        <activity
+            android:name=".profil.EditProfile"
+            android:exported="false" />
+        <activity
             android:name=".info.Heyelan"
             android:exported="false" />
         <activity
@@ -47,7 +53,8 @@
         <activity
             android:name=".ilkyardim.FirstAidActivity"
             android:exported="false" />
-        <activity android:name=".ilkyardim.FirstAidDetailActivity"
+        <activity
+            android:name=".ilkyardim.FirstAidDetailActivity"
             android:exported="false" />
         <activity
             android:name=".InfoActivity"
