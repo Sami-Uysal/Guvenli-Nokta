@@ -81,7 +81,7 @@ public class Deprem extends AppCompatActivity {
         List<CardModel> detailCards = new ArrayList<>();
 
         switch (cardType) {
-            case 0: // "Bina içindeyseniz"
+            case 0:
                 detailCards.add(new CardModel( "Kesinlikle panik yapmayınız",
                         "Deprem anında panik yapmak karar verme yeteneğinizi zayıflatır. Sakin kalarak kendiniz ve etrafınızdakiler için doğru kararlar verebilirsiniz."));
 
