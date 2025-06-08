@@ -1,7 +1,6 @@
 package com.guvenlinokta.app.profil;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -27,11 +26,12 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.guvenlinokta.app.MainActivity;
 import com.guvenlinokta.app.R;
+import com.guvenlinokta.app.ui.BaseActivity;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class PinlerimActivity extends AppCompatActivity implements PinAdapter.OnPinClickListener {
+public class PinlerimActivity extends BaseActivity implements PinAdapter.OnPinClickListener {
 
     private static final String TAG = "PinlerimActivity";
 

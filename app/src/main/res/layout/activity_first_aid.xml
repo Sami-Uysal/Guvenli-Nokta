@@ -9,7 +9,10 @@
     android:background="?android:colorBackground"
     android:fitsSystemWindows="true"
     tools:context=".ilkyardim.FirstAidActivity"
-    android:layout_margin="10dp">
+    android:layout_marginTop="50dp"
+    android:layout_marginLeft="12dp"
+    android:layout_marginRight="12dp"
+    android:layout_marginBottom="12dp">
 
     <LinearLayout
         android:layout_width="match_parent"

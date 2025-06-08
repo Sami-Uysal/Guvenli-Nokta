@@ -3,4 +3,5 @@
     <string name="afet_seciniz">Lütfen bir afet türü seçin</string>
     <string name="open">Menüyü Aç</string>
     <string name="close">Menüyü Kapat</string>
+    <string name="geri">Geri</string>
 </resources>

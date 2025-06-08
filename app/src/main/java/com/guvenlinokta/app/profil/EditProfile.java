@@ -1,7 +1,5 @@
 package com.guvenlinokta.app.profil;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.app.DatePickerDialog;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -24,6 +22,7 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.SetOptions;
 import com.guvenlinokta.app.R;
+import com.guvenlinokta.app.ui.BaseActivity;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -34,7 +33,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public class EditProfile extends AppCompatActivity {
+public class EditProfile extends BaseActivity {
 
     private static final String ETIKET = "EditProfileActivity";
     private TextInputEditText kullaniciAdiMetinKutusu, yeniSifreMetinKutusu, mevcutSifreMetinKutusu;

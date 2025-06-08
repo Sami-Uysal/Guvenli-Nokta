@@ -8,7 +8,10 @@
     android:background="?android:colorBackground"
     tools:context=".ilkyardim.FirstAidDetailActivity"
     android:fitsSystemWindows="true"
-    android:layout_margin="12dp">
+    android:layout_marginTop="50dp"
+    android:layout_marginLeft="12dp"
+    android:layout_marginRight="12dp"
+    android:layout_marginBottom="12dp">
 
     <TextView
         android:id="@+id/textViewDetailTitle"

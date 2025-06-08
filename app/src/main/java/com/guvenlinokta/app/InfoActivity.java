@@ -16,9 +16,9 @@ import android.os.Looper;
 import androidx.core.app.ActivityCompat;
 
 import com.google.android.gms.location.*;
+import com.guvenlinokta.app.ui.BaseActivity;
 
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -28,7 +28,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-public class InfoActivity extends AppCompatActivity {
+public class InfoActivity extends BaseActivity {
     private FusedLocationProviderClient fusedLocationClient;
     private static final int LOCATION_PERMISSION_REQUEST = 1001;
 

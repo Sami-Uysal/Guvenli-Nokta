@@ -6,12 +6,12 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import androidx.appcompat.app.AppCompatActivity;
 import com.guvenlinokta.app.R;
+import com.guvenlinokta.app.ui.BaseActivity;
 
 import java.util.ArrayList;
 
-public class DetailCardActivity extends AppCompatActivity {
+public class DetailCardActivity extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

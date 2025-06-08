@@ -2,7 +2,6 @@ package com.guvenlinokta.app;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.net.Uri;
@@ -28,8 +27,9 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.guvenlinokta.app.profil.EditProfile;
+import com.guvenlinokta.app.ui.BaseActivity;
 
-public class ProfilActivity extends AppCompatActivity {
+public class ProfilActivity extends BaseActivity {
 
     private static final int RESIM_SECME_ISTEGI = 1;
 

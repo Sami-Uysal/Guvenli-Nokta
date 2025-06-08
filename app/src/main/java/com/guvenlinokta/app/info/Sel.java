@@ -6,16 +6,16 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.guvenlinokta.app.R;
+import com.guvenlinokta.app.ui.BaseActivity;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class Sel extends AppCompatActivity {
+public class Sel extends BaseActivity {
     private RecyclerView recyclerView;
     private AfetAdapter adapter;
 

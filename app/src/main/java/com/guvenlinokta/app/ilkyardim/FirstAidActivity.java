@@ -8,12 +8,13 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.guvenlinokta.app.R;
 import com.guvenlinokta.app.ilkyardim.FirstAidTopic;
+import com.guvenlinokta.app.ui.BaseActivity;
+
 import java.util.Locale;
 
 import java.util.ArrayList;
@@ -23,7 +24,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class FirstAidActivity extends AppCompatActivity {
+public class FirstAidActivity extends BaseActivity {
 
     private EditText editTextSearch;
     private RecyclerView recyclerViewTopics;

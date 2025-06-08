@@ -2,11 +2,11 @@ package com.guvenlinokta.app.ilkyardim;
 
 import android.os.Bundle;
 import android.widget.TextView;
-import androidx.appcompat.app.AppCompatActivity;
 
 import com.guvenlinokta.app.R;
+import com.guvenlinokta.app.ui.BaseActivity;
 
-public class FirstAidDetailActivity extends AppCompatActivity {
+public class FirstAidDetailActivity extends BaseActivity {
 
     public static final String EXTRA_TOPIC_TITLE = "com.guvenlinokta.app.ilkyardim.EXTRA_TOPIC_TITLE";
     public static final String EXTRA_TOPIC_DESCRIPTION = "com.guvenlinokta.app.ilkyardim.EXTRA_TOPIC_DESCRIPTION";
