@@ -67,12 +67,14 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private String bekleyenTekPinAdi;
     private double bekleyenTekPinLat;
     private double bekleyenTekPinLng;
+    private boolean isPinCameraActionTaken = false;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        checkAndRequestPermissions();
 
         fusedLocationClient = com.google.android.gms.location.LocationServices.getFusedLocationProviderClient(this);
 
@@ -170,6 +172,33 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
         });
 
+    }
+    private void checkAndRequestPermissions() {
+        List<String> permissionsNeeded = new ArrayList<>();
+
+        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+            permissionsNeeded.add(android.Manifest.permission.ACCESS_FINE_LOCATION);
+        }
+
+        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+            permissionsNeeded.add(android.Manifest.permission.ACCESS_COARSE_LOCATION);
+        }
+
+        if (android.os.Build.VERSION.SDK_INT >= 33 &&
+                ActivityCompat.checkSelfPermission(this, android.Manifest.permission.POST_NOTIFICATIONS)
+                        != PackageManager.PERMISSION_GRANTED) {
+            permissionsNeeded.add(android.Manifest.permission.POST_NOTIFICATIONS);
+        }
+
+        if (!permissionsNeeded.isEmpty()) {
+            ActivityCompat.requestPermissions(
+                    this,
+                    permissionsNeeded.toArray(new String[0]),
+                    100
+            );
+        }
     }
     private void showToplanmaAlaniDialog() {
         View dialogView = getLayoutInflater().inflate(R.layout.dialog_toplanma_alani, null);
@@ -408,7 +437,50 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == 1 && grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-                mMap.setMyLocationEnabled(true);
+                if (mMap != null) {
+                    mMap.setMyLocationEnabled(true);
+                    yaklasilamayanKonum();
+                }
+            }
+        } else if (requestCode == 100) {
+            boolean allPermissionsGranted = true;
+            for (int result : grantResults) {
+                if (result != PackageManager.PERMISSION_GRANTED) {
+                    allPermissionsGranted = false;
+                    break;
+                }
+            }
+
+            if (allPermissionsGranted) {
+                Toast.makeText(this, "Tüm izinler verildi, uygulama tam işlevsel çalışabilir", Toast.LENGTH_SHORT).show();
+
+                if (mMap != null && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                    mMap.setMyLocationEnabled(true);
+                    yaklasilamayanKonum();
+                }
+            } else {
+                Toast.makeText(this, "Bazı izinler reddedildi, uygulamanın bazı özellikleri çalışmayabilir", Toast.LENGTH_LONG).show();
+            }
+        }
+    }
+
+    private void yaklasilamayanKonum() {
+        if (!isPinCameraActionTaken && mMap != null) {
+            if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                fusedLocationClient.getLastLocation().addOnSuccessListener(this, location -> {
+                    if (location != null) {
+                        LatLng myLatLng = new LatLng(location.getLatitude(), location.getLongitude());
+                        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(myLatLng, 17f));
+                    } else {
+                        Toast.makeText(MainActivity.this, "Konum bulunamadı. Konum servislerinizin açık olduğundan emin olun.", Toast.LENGTH_LONG).show();
+                        LatLng defaultLocation = new LatLng(39.9334, 32.8597);
+                        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(defaultLocation, 6f));
+                    }
+                }).addOnFailureListener(e -> {
+                    Toast.makeText(MainActivity.this, "Konum alınamadı: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    LatLng defaultLocation = new LatLng(39.9334, 32.8597);
+                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(defaultLocation, 6f));
+                });
             }
         }
     }
