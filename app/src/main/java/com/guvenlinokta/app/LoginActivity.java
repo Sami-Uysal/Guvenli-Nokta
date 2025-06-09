@@ -8,7 +8,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
-import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -30,7 +29,7 @@ public class LoginActivity extends BaseActivity {
     private EditText etEmail, etPassword;
     private Button btnLogin;
     private MaterialButton btnGoogle;
-    private TextView tvRegister;
+    private TextView tvRegister, tvForgotPassword;
     private FirebaseAuth mAuth;
     private GoogleSignInClient mGoogleSignInClient;
 
@@ -44,6 +43,7 @@ public class LoginActivity extends BaseActivity {
         btnLogin = findViewById(R.id.btnLogin);
         btnGoogle = findViewById(R.id.btnGoogle);
         tvRegister = findViewById(R.id.tvRegister);
+        tvForgotPassword = findViewById(R.id.tvForgotPassword);
         mAuth = FirebaseAuth.getInstance();
 
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -71,6 +71,13 @@ public class LoginActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(LoginActivity.this, RegisterActivity.class));
+            }
+        });
+
+        tvForgotPassword.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                forgotPassword();
             }
         });
     }
@@ -130,6 +137,24 @@ public class LoginActivity extends BaseActivity {
                     } else {
                         Log.w(TAG, "signInWithCredential:failure", task.getException());
                         Toast.makeText(LoginActivity.this, "Kimlik doğrulama başarısız.", Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
+
+    private void forgotPassword() {
+        String email = etEmail.getText().toString().trim();
+
+        if (email.isEmpty()) {
+            Toast.makeText(this, "Lütfen e-posta adresinizi girin", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        mAuth.sendPasswordResetEmail(email)
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        Toast.makeText(LoginActivity.this, "Şifre sıfırlama e-postası gönderildi.", Toast.LENGTH_LONG).show();
+                    } else {
+                        Toast.makeText(LoginActivity.this, "E-posta gönderilemedi: " + task.getException().getMessage(), Toast.LENGTH_LONG).show();
                     }
                 });
     }
