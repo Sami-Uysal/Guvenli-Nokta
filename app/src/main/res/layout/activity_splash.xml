@@ -1,4 +1,4 @@
-<!-- res/layout/activity_splash.xml -->
+<?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -10,6 +10,16 @@
         android:layout_height="200dp"
         android:src="@drawable/logo"
         android:layout_centerInParent="true"
-        android:background="@mipmap/logo_background"
         android:contentDescription="@string/app_name"/>
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_below="@id/logoImage"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="30dp"
+        android:indeterminateTint="@color/colorPrimary"
+        android:visibility="visible" />
 </RelativeLayout>

@@ -3,14 +3,17 @@ package com.guvenlinokta.app;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.VibrationEffect;
+import android.os.Vibrator;
 import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.RelativeLayout;
 import com.guvenlinokta.app.profil.PinlerimActivity;
 
 import com.bumptech.glide.Glide;
@@ -32,6 +35,7 @@ import com.guvenlinokta.app.ui.BaseActivity;
 public class ProfilActivity extends BaseActivity {
 
     private static final int RESIM_SECME_ISTEGI = 1;
+    private static final long TITRESIM_SURESI_MS = 50;
 
     private ShapeableImageView profilResmiImageView;
     private TextView kullaniciAdiMetniProfil;
@@ -42,6 +46,7 @@ public class ProfilActivity extends BaseActivity {
     private Uri resimYoluUri;
     private RelativeLayout profiliDuzenleYerlesimi;
     private RelativeLayout pinlerimYerlesimi;
+    private Vibrator titresimServisi;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +56,7 @@ public class ProfilActivity extends BaseActivity {
         kimlikDogrulama = FirebaseAuth.getInstance();
         depolama = FirebaseStorage.getInstance();
         depolamaReferansi = depolama.getReference();
+        titresimServisi = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
 
         profilResmiImageView = findViewById(R.id.profilResmiImageView);
         kullaniciAdiMetniProfil = findViewById(R.id.isimTextView);
@@ -72,23 +78,20 @@ public class ProfilActivity extends BaseActivity {
         profiliDuzenleYerlesimi.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(ProfilActivity.this, EditProfile.class);
-                startActivity(intent);
+                startActivity(new Intent(ProfilActivity.this, EditProfile.class));
             }
         });
 
         pinlerimYerlesimi.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(ProfilActivity.this, PinlerimActivity.class);
-                startActivity(intent);
+                startActivity(new Intent(ProfilActivity.this, PinlerimActivity.class));
             }
         });
         cikisYapMetni.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 kimlikDogrulama.signOut();
-                Toast.makeText(ProfilActivity.this, "Çıkış yapıldı!", Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(ProfilActivity.this, MainActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(intent);
@@ -97,10 +100,18 @@ public class ProfilActivity extends BaseActivity {
         });
 
         bildirimAnahtari.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (titresimServisi != null && titresimServisi.hasVibrator()) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    titresimServisi.vibrate(VibrationEffect.createOneShot(TITRESIM_SURESI_MS, VibrationEffect.DEFAULT_AMPLITUDE));
+                } else {
+                    titresimServisi.vibrate(TITRESIM_SURESI_MS);
+                }
+            }
+
             if (isChecked) {
-                Toast.makeText(ProfilActivity.this, "Bildirimler açıldı.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Bildirimler açıldı.", Toast.LENGTH_SHORT).show();
             } else {
-                Toast.makeText(ProfilActivity.this, "Bildirimler kapandı.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Bildirimler kapatıldı.", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -111,61 +122,55 @@ public class ProfilActivity extends BaseActivity {
         kullaniciVerileriniYukle();
     }
 
-    private void kullaniciVerileriniYukle() { // Değiştirildi
-        FirebaseUser mevcutKullanici = kimlikDogrulama.getCurrentUser(); // Değiştirildi
+    private void kullaniciVerileriniYukle() {
+        FirebaseUser mevcutKullanici = kimlikDogrulama.getCurrentUser();
         if (mevcutKullanici != null) {
-            String goruntulenecekAd = mevcutKullanici.getDisplayName(); // Değiştirildi
-            String eposta = mevcutKullanici.getEmail(); // Değiştirildi
-            Uri fotografAdresi = mevcutKullanici.getPhotoUrl(); // Değiştirildi
+            String goruntulenecekAd = mevcutKullanici.getDisplayName();
+            String eposta = mevcutKullanici.getEmail();
+            Uri fotografAdresi = mevcutKullanici.getPhotoUrl();
 
-            if (goruntulenecekAd != null && !goruntulenecekAd.isEmpty()) { // Değiştirildi
-                kullaniciAdiMetniProfil.setText(goruntulenecekAd); // Değiştirildi
+            if (goruntulenecekAd != null && !goruntulenecekAd.isEmpty()) {
+                kullaniciAdiMetniProfil.setText(goruntulenecekAd);
             } else {
-                kullaniciAdiMetniProfil.setText("Kullanıcı"); // Değiştirildi
+                kullaniciAdiMetniProfil.setText("Kullanıcı Adı Yok");
             }
 
-            if (eposta != null && !eposta.isEmpty()) { // Değiştirildi
-                epostaMetniProfil.setText(eposta); // Değiştirildi
+            if (eposta != null && !eposta.isEmpty()) {
+                epostaMetniProfil.setText(eposta);
             } else {
-                epostaMetniProfil.setText("E-posta bilgisi yok"); // Değiştirildi
+                epostaMetniProfil.setText("E-posta Yok");
             }
 
-            if (fotografAdresi != null) { // Değiştirildi
-                Glide.with(this)
-                        .load(fotografAdresi) // Değiştirildi
-                        .placeholder(R.drawable.profil)
-                        .error(R.drawable.profil)
-                        .into(profilResmiImageView);
+            if (fotografAdresi != null) {
+                Glide.with(this).load(fotografAdresi).placeholder(R.drawable.profil).into(profilResmiImageView);
             } else {
-                Glide.with(this)
-                        .load(R.drawable.profil)
-                        .into(profilResmiImageView);
+                Glide.with(this).load(R.drawable.profil).into(profilResmiImageView);
             }
         }
     }
 
-    private void resimSeciciyiAc() { // Değiştirildi
+    private void resimSeciciyiAc() {
         Intent intent = new Intent();
         intent.setType("image/*");
         intent.setAction(Intent.ACTION_GET_CONTENT);
-        startActivityForResult(Intent.createChooser(intent, "Profil Resmi Seç"), RESIM_SECME_ISTEGI); // Değiştirildi
+        startActivityForResult(Intent.createChooser(intent, "Profil Resmi Seç"), RESIM_SECME_ISTEGI);
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == RESIM_SECME_ISTEGI && resultCode == RESULT_OK && data != null && data.getData() != null) { // Değiştirildi
-            resimYoluUri = data.getData(); // Değiştirildi
-            Glide.with(this).load(resimYoluUri).into(profilResmiImageView); // Değiştirildi
-            profilResminiYukle(); // Değiştirildi
+        if (requestCode == RESIM_SECME_ISTEGI && resultCode == RESULT_OK && data != null && data.getData() != null) {
+            resimYoluUri = data.getData();
+            Glide.with(this).load(resimYoluUri).into(profilResmiImageView);
+            profilResminiYukle();
         }
     }
 
-    private void profilResminiYukle() { // Değiştirildi
-        if (resimYoluUri != null) { // Değiştirildi
-            FirebaseUser kullanici = kimlikDogrulama.getCurrentUser(); // Değiştirildi
-            if (kullanici == null) { // Değiştirildi
-                Toast.makeText(this, "Kullanıcı bulunamadı.", Toast.LENGTH_SHORT).show();
+    private void profilResminiYukle() {
+        if (resimYoluUri != null) {
+            FirebaseUser kullanici = kimlikDogrulama.getCurrentUser();
+            if (kullanici == null) {
+                Toast.makeText(this, "Profil resmini yüklemek için kullanıcı girişi yapılmalı.", Toast.LENGTH_SHORT).show();
                 return;
             }
 
@@ -185,8 +190,8 @@ public class ProfilActivity extends BaseActivity {
                     })
                     .addOnFailureListener(new OnFailureListener() {
                         @Override
-                        public void onFailure(@NonNull Exception hata) {
-                            Toast.makeText(ProfilActivity.this, "Yükleme başarısız: " + hata.getMessage(), Toast.LENGTH_SHORT).show(); // Değiştirildi
+                        public void onFailure(@NonNull Exception e) {
+                            Toast.makeText(ProfilActivity.this, "Resim yükleme başarısız: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                         }
                     });
         }
@@ -199,7 +204,7 @@ public class ProfilActivity extends BaseActivity {
             return;
         }
 
-        UserProfileChangeRequest profilGuncellemeleri = new UserProfileChangeRequest.Builder() // Değiştirildi
+        UserProfileChangeRequest profilGuncellemeleri = new UserProfileChangeRequest.Builder()
                 .setPhotoUri(profilResimAdresi)
                 .build();
 

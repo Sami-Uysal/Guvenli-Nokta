@@ -8,6 +8,7 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.VIBRATE" />
 
     <application
         android:allowBackup="true"
@@ -19,6 +20,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.GüvenliNokta"
         tools:targetApi="31">
+        <activity
+            android:name=".SirenActivity"
+            android:exported="false" />
         <activity
             android:name=".profil.PinlerimActivity"
             android:exported="false" />

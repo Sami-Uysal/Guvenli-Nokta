@@ -115,6 +115,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 Intent intent = new Intent(Intent.ACTION_DIAL);
                 intent.setData(Uri.parse("tel:112"));
                 startActivity(intent);
+            }else if (id == R.id.nav_siren) {
+                startActivity(new Intent(this, SirenActivity.class));
             }
             drawerLayout.closeDrawers();
             return true;
@@ -546,6 +548,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         mMap.addMarker(new MarkerOptions().position(pinKonumu).title(ad));
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(pinKonumu, 15f));
         Toast.makeText(this, "'" + ad + "' haritada gösteriliyor.", Toast.LENGTH_SHORT).show();
+        isPinCameraActionTaken = true;
     }
 
 }

@@ -68,4 +68,5 @@ dependencies {
     annotationProcessor("com.github.bumptech.glide:compiler:4.12.0")
     implementation("com.google.firebase:firebase-storage:20.3.0")
     implementation ("com.google.android.gms:play-services-auth:20.7.0")
+    implementation("androidx.core:core-splashscreen:1.0.1")
 }
