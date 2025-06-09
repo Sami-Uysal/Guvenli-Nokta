@@ -39,12 +39,31 @@ public class DetailCardActivity extends BaseActivity {
             for (CardModel card : detailCards) {
                 View cardView = inflater.inflate(R.layout.item_card_detail, cardsContainer, false);
 
+                LinearLayout headerLayout = cardView.findViewById(R.id.headerLayout);
+                final LinearLayout expandableContent = cardView.findViewById(R.id.expandableContent);
                 TextView titleView = cardView.findViewById(R.id.cardTitle);
                 TextView descriptionView = cardView.findViewById(R.id.cardDescription);
+                final View expandIcon = cardView.findViewById(R.id.expandIcon);
 
                 titleView.setText(card.getTitle());
                 descriptionView.setText(card.getDescription());
 
+                headerLayout.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (expandableContent.getVisibility() == View.VISIBLE) {
+                            expandableContent.setVisibility(View.GONE);
+                            if (expandIcon != null) {
+                                ((android.widget.ImageView) expandIcon).setImageResource(R.drawable.arrow_down);
+                            }
+                        } else {
+                            expandableContent.setVisibility(View.VISIBLE);
+                            if (expandIcon != null) {
+                                ((android.widget.ImageView) expandIcon).setImageResource(R.drawable.arrow_up);
+                            }
+                        }
+                    }
+                });
                 cardsContainer.addView(cardView);
             }
         }
