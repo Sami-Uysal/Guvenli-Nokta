@@ -18,7 +18,19 @@
         android:layout_above="@id/tumPinleriYukleButton"
         android:padding="8dp"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
-
+    <TextView
+        android:id="@+id/countdownTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/tumPinleriYukleButton"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="8dp"
+        android:text="5"
+        android:textSize="12sp"
+        android:textColor="?attr/colorOnPrimary"
+        android:fontFamily="@font/montserrat_bold"
+        android:visibility="gone"
+        tools:visibility="visible"/>
     <Button
         android:id="@+id/tumPinleriYukleButton"
         android:layout_width="match_parent"

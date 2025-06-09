@@ -12,6 +12,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
+import android.os.CountDownTimer;
+import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -39,7 +41,9 @@ public class PinlerimActivity extends BaseActivity implements PinAdapter.OnPinCl
     private PinAdapter pinAdapter;
     private List<Pin> pinListesi;
     private Button tumPinleriYukleButton;
-
+    private TextView countdownTextView;
+    private CountDownTimer countDownTimer;
+    private String originalButtonText;
     private FirebaseAuth mAuth;
     private FirebaseFirestore db;
     private FirebaseUser currentUser;
@@ -57,9 +61,11 @@ public class PinlerimActivity extends BaseActivity implements PinAdapter.OnPinCl
         mAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
         currentUser = mAuth.getCurrentUser();
+        countdownTextView = findViewById(R.id.countdownTextView);
 
         pinlerRecyclerView = findViewById(R.id.pinlerRecyclerView);
         tumPinleriYukleButton = findViewById(R.id.tumPinleriYukleButton);
+        originalButtonText = tumPinleriYukleButton.getText().toString();
 
         pinListesi = new ArrayList<>();
         pinAdapter = new PinAdapter(pinListesi, this);
@@ -71,15 +77,37 @@ public class PinlerimActivity extends BaseActivity implements PinAdapter.OnPinCl
         tumPinleriYukleButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (pinListesi.isEmpty()) {
+                if (countDownTimer != null) {
+                    return;
+                }
+                else if (pinListesi.isEmpty()) {
                     Toast.makeText(PinlerimActivity.this, "Haritada gösterilecek kayıtlı pin bulunmamaktadır.", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                Intent intent = new Intent(PinlerimActivity.this, MainActivity.class);
-                intent.putExtra("pinleriYukle", true);
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(intent);
-                finish();
+                tumPinleriYukleButton.setText("Pinler yükleniyor...");
+                countdownTextView.setVisibility(View.VISIBLE);
+                tumPinleriYukleButton.setEnabled(false);
+                countDownTimer = new CountDownTimer(5000, 1000) {
+                    @Override
+                    public void onTick(long millisUntilFinished) {
+                        int secondsRemaining = (int) (millisUntilFinished / 1000);
+                        countdownTextView.setText("Pinler " + secondsRemaining + " saniye içinde yüklenecek...");
+                    }
+
+                    @Override
+                    public void onFinish() {
+                        tumPinleriYukleButton.setText(originalButtonText);
+                        countdownTextView.setVisibility(View.GONE);
+                        tumPinleriYukleButton.setEnabled(true);
+                        countDownTimer = null;
+
+                        Intent intent = new Intent(PinlerimActivity.this, MainActivity.class);
+                        intent.putExtra("pinleriYukle", true);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(intent);
+                        finish();
+                    }
+                }.start();
             }
         });
     }
