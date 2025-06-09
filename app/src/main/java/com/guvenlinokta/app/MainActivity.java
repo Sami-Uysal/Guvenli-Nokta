@@ -87,10 +87,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             Menu menu = navigationView.getMenu();
             MenuItem profileItem = menu.findItem(R.id.nav_profile);
 
-            if (FirebaseAuth.getInstance().getCurrentUser() != null) {
-                profileItem.setTitle("Profil");
-            } else {
+            if (FirebaseAuth.getInstance().getCurrentUser() == null) {
                 profileItem.setTitle("Giriş Yap");
+            } else {
+                profileItem.setTitle("Profil");
             }
             drawerLayout.openDrawer(GravityCompat.START);
         });
@@ -102,10 +102,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             if (id == R.id.nav_toplanma_alani) {
                 showToplanmaAlaniDialog();
             }else if (id == R.id.nav_profile) {
-                if (FirebaseAuth.getInstance().getCurrentUser() != null) {
-                    startActivity(new Intent(this, ProfilActivity.class));
-                } else {
+                if (FirebaseAuth.getInstance().getCurrentUser() == null) {
                     startActivity(new Intent(this, LoginActivity.class));
+                } else {
+                    startActivity(new Intent(this, ProfilActivity.class));
                 }
             } else if (id == R.id.nav_info) {
                 startActivity(new Intent(this, InfoActivity.class));

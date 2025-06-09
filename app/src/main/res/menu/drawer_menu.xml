@@ -9,7 +9,7 @@
     <group android:id="@+id/group_profile" android:checkableBehavior="none">
         <item
             android:id="@+id/nav_profile"
-            android:title="Profil"
+            android:title="Giriş Yap"
             android:orderInCategory="100"/>
     </group>
 </menu>
