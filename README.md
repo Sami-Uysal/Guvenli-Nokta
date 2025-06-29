@@ -1,4 +1,3 @@
-
 # 📱 Güvenli Nokta
 
 **Güvenli Nokta**, doğal afetler ve acil durumlar için bilgilendirme, konum paylaşımı ve ilk yardım rehberliği sağlayan bir Android uygulamasıdır.
@@ -82,19 +81,23 @@ Uygulamanın son sürümünü doğrudan indirmek için:
 1. Bu repoyu klonlayın:
    
 
-bash
+```bash
    git clone https://github.com/Sami-Uysal/Guvenli-Nokta.git
-
+```
 2. Android Studio ile açın.
 
 3. `gradle.properties` dosyasına kendi API anahtarınızı girin.
 
-bash
+```bash
    API_KEY=...
    WEATHER_API_KEY=...
-
+```
 5. Gerekli izinleri AndroidManifest.xml dosyasında kontrol edin.
-
+```xml
+<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+<uses-permission android:name="android.permission.INTERNET" />
+```
 6. Uygulamayı emülatör veya fiziksel cihazda çalıştırın.
 
 ---
